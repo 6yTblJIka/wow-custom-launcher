@@ -191,6 +191,8 @@ namespace WoWLauncher.Patcher
                     File.Delete("Cache/L/plist.txt");
                 if (File.Exists("Cache/Hash/Cache.txt"))
                     LoadCache();
+                if (!Directory.Exists("Logs"))
+                    Directory.CreateDirectory("Logs");
                 if (File.Exists(logFilePath))
                     File.Delete(logFilePath);
 
@@ -275,34 +277,6 @@ namespace WoWLauncher.Patcher
         {
             CheckPatch(false);
         }
-        
-        private string HashFile(string patchName)
-        {
-            
-            string _localHash = string.Empty;
-            if (CheckHashFromCache(patchName))
-            { 
-                Log($"Cache Found: {patchName}");
-                _localHash = GetChecksumFromCache(patchName);
-                return _localHash;
-                    
-            }
-            else
-            {
-                Log($"Cache Not Found: {patchName}");
-                _localHash = string.Empty;
-                using (MD5 _crypto = MD5.Create())
-                {
-                    using FileStream stream = File.OpenRead($"Data/{patchName}");
-                    _localHash = BitConverter.ToString(_crypto.ComputeHash(stream)).Replace("-", "").ToUpperInvariant();
-                    Log($"Made Hash {_localHash}");
-                    AddFileToCache(patchName,_localHash);
-                    SaveCache();
-                    return _localHash;
-                }
-            }
-            
-        }
         /// <summary>
         /// Download patch at given index
         /// </summary>
@@ -319,30 +293,48 @@ namespace WoWLauncher.Patcher
 
             double mappedValue = Map(originalValue, minValue, maxValue, newMinValue, newMaxValue);
 
-            Log($"Checking Patch? {m_PatchIndex} / {m_Patches.Count} {patchName} {patchHash}");
+            Log($"Checking Patch? {m_PatchIndex + 1} / {m_Patches.Count} {patchName}");
             // Check if this patch was already downloaded previously
             // Update texts
             m_WndRef.progressInfo.IsEnabled = true;
             m_WndRef.progressBar.Value = mappedValue;
             m_WndRef.progressInfo.Visibility = Visibility.Visible;
-            m_WndRef.progressInfo.Content = $"Checking Patch {m_PatchIndex} / {m_Patches.Count} {patchName}";
+            m_WndRef.progressInfo.Content = $"Checking Patch {m_PatchIndex + 1} / {m_Patches.Count} {patchName}";
             await Task.Delay(50);
             
             if (File.Exists($"Data/{patchName}"))
             {
-                
-                
-                Log($"File Found: {patchName}");
+
+                Log($"Patch Found: {patchName}");
                 // Calculate hash of local downloaded patch
                 string _localHash = string.Empty;
-                _localHash = HashFile(patchName);
+                if (CheckHashFromCache(patchName))
+                { 
+                    Log($"Cache Found: {patchName}");
+                    _localHash = GetChecksumFromCache(patchName);
+                    
+                }
+                else
+                {
+                    Log($"Cache Not Found: {patchName}");
+                    using (MD5 _crypto = MD5.Create())
+                    {
+                        using FileStream stream = File.OpenRead($"Data/{patchName}");
+                        _localHash = BitConverter.ToString(_crypto.ComputeHash(stream)).Replace("-", "").ToUpperInvariant();
+                        Log($"Made Hash {_localHash}");
+                        AddFileToCache(patchName,_localHash);
+                        SaveCache();
+                    }
+                }
                 
                
                 
                 // Compare checksums and skip patch if it matches (no changes)
+                
+                Log($"Compare {patchName} Hash Local {_localHash} Server {patchHash}");
                 if (_localHash.Equals(patchHash))
                 {
-                    Log("Compare checksums and skipped patch (no changes)");
+                    Log($"Pass");
                     // Continue with next patch
                     m_PatchIndex++;
                     if (m_PatchIndex >= m_Patches.Count)
@@ -356,6 +348,14 @@ namespace WoWLauncher.Patcher
                         return;
                     }
                 }
+                else
+                {
+                    Log($"Fail");
+                }
+            }
+            else
+            {
+                Log($"Patch {patchName} missing");
             }
 
             // Check if the given patch actually exists on server?
