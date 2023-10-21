@@ -17,7 +17,7 @@
     <Product>Launcher</Product>
     <Copyright></Copyright>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>4.2</Version>
+    <Version>4.3</Version>
     <RepositoryUrl></RepositoryUrl>
     <RepositoryType></RepositoryType>
     <BaseOutputPath>F:\Games\World of Warcraft\Coding\WoWUpdater\Build</BaseOutputPath>

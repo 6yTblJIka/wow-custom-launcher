@@ -326,7 +326,7 @@ namespace WoWLauncher.Patcher
             m_WndRef.progressBar.Value = mappedValue;
             m_WndRef.progressInfo.Visibility = Visibility.Visible;
             m_WndRef.progressInfo.Content = $"Checking Patch {m_PatchIndex} / {m_Patches.Count} {patchName}";
-            await Task.Delay(500);
+            await Task.Delay(50);
             
             if (File.Exists($"Data/{patchName}"))
             {
@@ -342,7 +342,7 @@ namespace WoWLauncher.Patcher
                 // Compare checksums and skip patch if it matches (no changes)
                 if (_localHash.Equals(patchHash))
                 {
-                    Log("Compare checksums and skip patch if it matches (no changes)");
+                    Log("Compare checksums and skipped patch (no changes)");
                     // Continue with next patch
                     m_PatchIndex++;
                     if (m_PatchIndex >= m_Patches.Count)
@@ -389,8 +389,6 @@ namespace WoWLauncher.Patcher
                 m_DownloadStopWatch.Start();
             }
 
-            HashFile(patchName);
-            
         }
 
         /// <summary>
