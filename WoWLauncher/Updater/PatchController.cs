@@ -130,7 +130,7 @@ namespace WoWLauncher.Patcher
                 {
                     foreach (var entry in fileHashCache)
                     {
-                        writer.WriteLine($"{entry.Key},{entry.Value}");
+                        writer.WriteLine($"{entry.Key.ToLower()},{entry.Value}");
                     }
                 }
                 Log($"Saving Cache");
@@ -234,7 +234,7 @@ namespace WoWLauncher.Patcher
                     m_PatchIndex = 0;
                     m_WndRef.progressInfo.Content = "0% (Patch ?/?, downloaded 0/0 MB at 0 Mb/s)";
                     // Create recovery flag
-                    File.WriteAllText("Cache/L/patching", m_Patches[m_PatchIndex].Filename);
+                    File.WriteAllText("Cache/L/patching", m_Patches[m_PatchIndex].Filename.ToLower());
                     // Begin patching
                     m_Patching = true;
                     DownloadPatch(m_PatchIndex);
@@ -261,7 +261,7 @@ namespace WoWLauncher.Patcher
                 string[] _data = _patch.Split(' ');
                 m_Patches.Add(new PatchData()
                 {
-                    Filename = _data[0],
+                    Filename = _data[0].ToLower(),
                     Checksum = _data[1]
                 });
             }
@@ -283,7 +283,7 @@ namespace WoWLauncher.Patcher
         /// <param name="_index">Patch index from patch list</param>
         private async Task DownloadPatch(int _index)
         {
-            var patchName = m_Patches[m_PatchIndex].Filename;
+            var patchName = m_Patches[m_PatchIndex].Filename.ToLower();
             var patchHash = m_Patches[m_PatchIndex].Checksum;
             double originalValue = m_PatchIndex; // Your original value in the range 0 to 30
             double minValue = 0;       // Minimum value of the original range
@@ -359,8 +359,8 @@ namespace WoWLauncher.Patcher
             }
 
             // Check if the given patch actually exists on server?
-            string url = $"{m_PatchUri}{m_Patches[m_PatchIndex].Filename}";
-            Log($"Downloading {m_Patches[m_PatchIndex].Filename} {url}");
+            string url = $"{m_PatchUri}{patchName}";
+            Log($"Downloading {patchName} {url}");
             WebRequest request = WebRequest.Create(url);
             try
             {
@@ -374,15 +374,15 @@ namespace WoWLauncher.Patcher
             }
 
             // Update recovery flag
-            File.WriteAllText("Cache/L/patching", m_Patches[m_PatchIndex].Filename);
+            File.WriteAllText("Cache/L/patching", patchName);
 
             // Patch it in
             using (WebClient wc = new())
             {
                 wc.DownloadProgressChanged += patch_GetPatchesAsync;
                 wc.DownloadFileAsync(
-                    new Uri($"{m_PatchUri}{m_Patches[m_PatchIndex].Filename}"),
-                    $"Data/{m_Patches[m_PatchIndex].Filename}"
+                    new Uri($"{m_PatchUri}{patchName}"),
+                    $"Data/{patchName}"
                 );
                 wc.DownloadFileCompleted += patch_DonePatchesAsync;
                 m_DownloadStopWatch.Reset();
@@ -401,7 +401,7 @@ namespace WoWLauncher.Patcher
             if (m_PatchIndex >= 0 && m_PatchIndex < m_Patches.Count)
             {
                 // Add the downloaded file to the cache
-                AddFileToCache(m_Patches[m_PatchIndex].Filename, m_Patches[m_PatchIndex].Checksum);
+                AddFileToCache(m_Patches[m_PatchIndex].Filename.ToLower(), m_Patches[m_PatchIndex].Checksum);
             }
             m_PatchIndex++;
             if (m_PatchIndex >= m_Patches.Count)
@@ -441,7 +441,8 @@ namespace WoWLauncher.Patcher
         /// <param name="e"></param>
         private void patch_GetPatchesAsync(object sender, DownloadProgressChangedEventArgs e)
         {
-            m_WndRef.progressInfo.Content = $"{e.ProgressPercentage}% (Patch {m_PatchIndex + 1}/{m_Patches.Count} {m_Patches[m_PatchIndex].Filename}, downloaded {e.BytesReceived / 1024f / 1024f:0.0}/{e.TotalBytesToReceive / 1024f / 1024f:0.0} MB at {(e.BytesReceived / 1024f / 1024f / m_DownloadStopWatch.Elapsed.TotalSeconds).ToString("0.0")} Mb/s)";
+            
+            m_WndRef.progressInfo.Content = $"{e.ProgressPercentage}% (Patch {m_PatchIndex + 1}/{m_Patches.Count} {m_Patches[m_PatchIndex].Filename.ToLower()}, downloaded {e.BytesReceived / 1024f / 1024f:0.0}/{e.TotalBytesToReceive / 1024f / 1024f:0.0} MB at {(e.BytesReceived / 1024f / 1024f / m_DownloadStopWatch.Elapsed.TotalSeconds).ToString("0.0")} Mb/s)";
             m_WndRef.progressBar.Value = e.ProgressPercentage;
         }
 
