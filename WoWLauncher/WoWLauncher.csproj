@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <Title>World of Warcraft Launcher</Title>
-    <Authors>Private Server Host</Authors>
+    <Authors>MadBuffoon</Authors>
     <Company>Private Server Company</Company>
     <PackageProjectUrl></PackageProjectUrl>
     <PackageIcon>app.png</PackageIcon>
@@ -15,9 +15,9 @@
     <AssemblyName>$(MSBuildProjectName)</AssemblyName>
     <IsPublishable>True</IsPublishable>
     <Product>Launcher</Product>
-    <Copyright>Games by Lance 2022</Copyright>
+    <Copyright></Copyright>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>4.1</Version>
+    <Version>4.2</Version>
     <RepositoryUrl></RepositoryUrl>
     <RepositoryType></RepositoryType>
     <BaseOutputPath>F:\Games\World of Warcraft\Coding\WoWUpdater\Build</BaseOutputPath>
@@ -34,6 +34,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>
     <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>F:\Games\World of Warcraft\Coding\Build\Release\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

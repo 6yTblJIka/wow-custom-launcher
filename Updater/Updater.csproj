@@ -21,6 +21,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>
+    <OutputPath>F:\Games\World of Warcraft\Coding\Build\Release\</OutputPath>
   </PropertyGroup>
 
 </Project>

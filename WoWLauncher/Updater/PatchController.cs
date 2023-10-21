@@ -326,7 +326,7 @@ namespace WoWLauncher.Patcher
             m_WndRef.progressBar.Value = mappedValue;
             m_WndRef.progressInfo.Visibility = Visibility.Visible;
             m_WndRef.progressInfo.Content = $"Checking Patch {m_PatchIndex} / {m_Patches.Count} {patchName}";
-            await Task.Delay(1000);
+            await Task.Delay(500);
             
             if (File.Exists($"Data/{patchName}"))
             {
@@ -443,7 +443,7 @@ namespace WoWLauncher.Patcher
         /// <param name="e"></param>
         private void patch_GetPatchesAsync(object sender, DownloadProgressChangedEventArgs e)
         {
-            m_WndRef.progressInfo.Content = $"{e.ProgressPercentage}% (Patch {m_PatchIndex + 1}/{m_Patches.Count}, downloaded {e.BytesReceived / 1024f / 1024f:0.0}/{e.TotalBytesToReceive / 1024f / 1024f:0.0} MB at {(e.BytesReceived / 1024f / 1024f / m_DownloadStopWatch.Elapsed.TotalSeconds).ToString("0.0")} Mb/s)";
+            m_WndRef.progressInfo.Content = $"{e.ProgressPercentage}% (Patch {m_PatchIndex + 1}/{m_Patches.Count} {m_Patches[m_PatchIndex].Filename}, downloaded {e.BytesReceived / 1024f / 1024f:0.0}/{e.TotalBytesToReceive / 1024f / 1024f:0.0} MB at {(e.BytesReceived / 1024f / 1024f / m_DownloadStopWatch.Elapsed.TotalSeconds).ToString("0.0")} Mb/s)";
             m_WndRef.progressBar.Value = e.ProgressPercentage;
         }
 
