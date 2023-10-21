@@ -7,7 +7,7 @@ internal class Program
 {
     // Program running flag
     private static bool m_Running;
-    private static string m_ClientUpdateUri = "https://www.example.com/Patch/client.zip";
+    private static string m_ClientUpdateUri = "http://MadClownWorld.com/Patch/Client.zip";
 
     /*
      * HOW TO ORGANIZE YOUR PATCH SERVER
@@ -70,6 +70,7 @@ internal class Program
         Console.WriteLine("> Downloading complete!");
         Console.WriteLine("> Unpacking...");
         Unpack();
+        
     }
 
     /// <summary>
@@ -98,11 +99,22 @@ internal class Program
     {
         try
         {
-            ZipFile.ExtractToDirectory("Cache/L/launcher.zip", Directory.GetCurrentDirectory(), true);
+            if (File.Exists("Cache/L/launcher.zip"))
+            {
+                ZipFile.ExtractToDirectory("Cache/L/launcher.zip", Directory.GetCurrentDirectory(), true);
+                Console.WriteLine("> Unzip successful");
+                Thread.Sleep(2000);
+            }
+            else
+            {
+                Console.WriteLine($"> Can't unzip update. Try again... ");
+                Thread.Sleep(5000);
+            }
         }
         catch
         {
-            Console.WriteLine($"> Can't unzip update. Try again... ");
+            Console.WriteLine($"> Super Can't unzip update. Try again... ");
+            Thread.Sleep(5000);
         };
     }
 
@@ -123,7 +135,7 @@ internal class Program
                 UseShellExecute = true
             });
         }
-        
+
         // Exit
         m_Running = false;
     }

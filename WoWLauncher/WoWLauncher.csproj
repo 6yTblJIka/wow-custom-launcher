@@ -13,21 +13,27 @@
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
     <ApplicationIcon>wow_app.ico</ApplicationIcon>
     <AssemblyName>$(MSBuildProjectName)</AssemblyName>
-    <IsPublishable>False</IsPublishable>
+    <IsPublishable>True</IsPublishable>
     <Product>Launcher</Product>
     <Copyright>Games by Lance 2022</Copyright>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>1.1</Version>
-    <RepositoryUrl>https://github.com/gslance/wow-custom-launcher</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
+    <Version>4.1</Version>
+    <RepositoryUrl></RepositoryUrl>
+    <RepositoryType></RepositoryType>
+    <BaseOutputPath>F:\Games\World of Warcraft\Coding\WoWUpdater\Build</BaseOutputPath>
+    <AssemblyVersion></AssemblyVersion>
+    <FileVersion></FileVersion>
+    <PublicSign>false</PublicSign>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>none</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>

@@ -20,8 +20,8 @@ namespace WoWLauncher.Updater
         private bool m_NeedsUpdate;
 
         // Textfile containing version number of latest launcher (e.g 1.2) 
-        private string m_UpdateVersionUri = "https://example.com/Patch/update.txt";
-        private string m_ServerAddressUri = "https://example.com/Patch/realm.txt";
+        private string m_UpdateVersionUri = "http://MadClownWorld.com/Patch/update.txt";
+        private string m_ServerAddressUri = "http://MadClownWorld.com/Patch/realm.txt";
         /*
          * HOW TO ORGANIZE YOUR PATCH SERVER
          * 
@@ -46,7 +46,9 @@ namespace WoWLauncher.Updater
         public bool NeedsUpdate { get { return m_NeedsUpdate; } }
         public string RealmAddress { get { return m_RealmAddress; } }
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public UpdateController(MainWindow _wndRef)
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
             m_WndRef = _wndRef;
             m_NeedsUpdate = false;
@@ -85,7 +87,7 @@ namespace WoWLauncher.Updater
         public void RetrieveRealmIP()
         {
             // Set default and prepare folders
-            m_RealmAddress = "127.0.0.1";
+            m_RealmAddress = "MadClownWorld.com";
             if (!Directory.Exists("Data/enUS"))
                 Directory.CreateDirectory("Data/enUS");
 
