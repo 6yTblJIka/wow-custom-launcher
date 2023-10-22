@@ -17,9 +17,10 @@ internal class PatchController
 {
     // Cache for file MD5 hashes
     private readonly Dictionary<string, string> fileHashCache;
+    private readonly string CacheFilePath = "Cache/Hash/Cache.txt";
 
     // Log file path
-    private readonly string logFilePath = "Logs/Launcher_log.txt";
+    private readonly string logFilePath = "Logs/Launcher_log.log";
     private readonly Stopwatch m_DownloadStopWatch;
 
     // Textfile containing patches (seperated on each line, md5 checksum next to it, e.g: Patch-L.mpq 6fd76dec2bbca6b58c7dce68b497e2bf)
@@ -89,9 +90,9 @@ internal class PatchController
         try
         {
             // Load the cache from a text file
-            if (File.Exists("Cache/Hash/Cache.txt"))
+            if (File.Exists(CacheFilePath))
             {
-                var lines = File.ReadAllLines("Cache/Hash/Cache.txt");
+                var lines = File.ReadAllLines(CacheFilePath);
                 foreach (var line in lines)
                 {
                     var parts = line.Split(',');
@@ -119,7 +120,7 @@ internal class PatchController
             if (!Directory.Exists("Cache/Hash"))
                 Directory.CreateDirectory("Cache/Hash");
 
-            string cacheFilePath = "Cache/Hash/Cache.txt";
+            string cacheFilePath = CacheFilePath;
             var existingCache = new Dictionary<string, string>();
 
             // Read the existing cache, if it exists
@@ -214,7 +215,7 @@ internal class PatchController
                 File.Delete("Cache/L/plist.txt");
             if (File.Exists("Cache/L/patching"))
                 File.Delete("Cache/L/patching");
-            if (File.Exists("Cache/Hash/Cache.txt"))
+            if (File.Exists(CacheFilePath))
                 LoadCache();
             if (!Directory.Exists("Logs"))
                 Directory.CreateDirectory("Logs");

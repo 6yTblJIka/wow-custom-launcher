@@ -17,7 +17,7 @@
         <Product>Launcher</Product>
         <Copyright></Copyright>
         <ApplicationManifest>app.manifest</ApplicationManifest>
-        <Version>5.4</Version>
+        <Version>5.5</Version>
         <RepositoryUrl></RepositoryUrl>
         <RepositoryType></RepositoryType>
         <BaseOutputPath>F:\Games\World of Warcraft\Coding\WoWUpdater\Build</BaseOutputPath>
@@ -95,6 +95,7 @@
         </Resource>
         <None Remove="images\TextInput.png" />
         <Resource Include="images\TextInput.png" />
+        <None Remove="MadClownWorld.snk" />
     </ItemGroup>
 
     <ItemGroup>

@@ -55,6 +55,22 @@ public partial class MainWindow : Window
         if (!Directory.Exists("Data"))
             Directory.CreateDirectory("Data");
 #endif
+        string processName = "WoWLauncher";
+        int currentProcessId = Process.GetCurrentProcess().Id;
+
+        Process[] processes = Process.GetProcessesByName(processName);
+
+        if (processes.Length > 0)
+        {
+            foreach (Process process in processes)
+            {
+                if (process.Id != currentProcessId)
+                {
+                    process.Kill();
+                }
+            }
+            
+        }
         // Begin checking for game updates
         m_Patcher.CheckPatch();
     }
