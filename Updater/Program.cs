@@ -7,7 +7,7 @@ internal class Program
 {
     // Program running flag
     private static bool m_Running;
-    private static string m_ClientUpdateUri = "http://MadClownWorld.com/Patch/Client.zip";
+    private static readonly string m_ClientUpdateUri = "http://MadClownWorld.com/Patch/Client.zip";
 
     /*
      * HOW TO ORGANIZE YOUR PATCH SERVER
@@ -30,7 +30,7 @@ internal class Program
      */
 
     /// <summary>
-    /// Program entry
+    ///     Program entry
     /// </summary>
     /// <param name="args"></param>
     private static void Main(string[] args)
@@ -53,14 +53,11 @@ internal class Program
         }
 
         // wait to finish before exiting
-        while (m_Running)
-        {
-            Thread.Sleep(100);
-        }
+        while (m_Running) Thread.Sleep(100);
     }
 
     /// <summary>
-    /// Unpacks update when download task finishes.
+    ///     Unpacks update when download task finishes.
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
@@ -70,11 +67,10 @@ internal class Program
         Console.WriteLine("> Downloading complete!");
         Console.WriteLine("> Unpacking...");
         Unpack();
-        
     }
 
     /// <summary>
-    /// Progress while downloading update.
+    ///     Progress while downloading update.
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
@@ -84,16 +80,16 @@ internal class Program
     }
 
     /// <summary>
-    /// Starts unpacking process before finishing.
+    ///     Starts unpacking process before finishing.
     /// </summary>
-    private async static void Unpack()
+    private static async void Unpack()
     {
         await Task.Run(() => Unzip());
         Finish();
     }
 
     /// <summary>
-    /// Unpacks update using ZIP.
+    ///     Unpacks update using ZIP.
     /// </summary>
     private static void Unzip()
     {
@@ -107,19 +103,21 @@ internal class Program
             }
             else
             {
-                Console.WriteLine($"> Can't unzip update. Try again... ");
+                Console.WriteLine("> Can't unzip update. Try again... ");
                 Thread.Sleep(5000);
             }
         }
         catch
         {
-            Console.WriteLine($"> Super Can't unzip update. Try again... ");
+            Console.WriteLine("> Super Can't unzip update. Try again... ");
             Thread.Sleep(5000);
-        };
+        }
+
+        ;
     }
 
     /// <summary>
-    /// Finish up and re-launch original application.
+    ///     Finish up and re-launch original application.
     /// </summary>
     private static void Finish()
     {
@@ -129,12 +127,10 @@ internal class Program
 
         // If the launcher is here (it should be), launch it again
         if (File.Exists("WoWLauncher.exe"))
-        {
             Process.Start(new ProcessStartInfo("WoWLauncher.exe")
             {
                 UseShellExecute = true
             });
-        }
 
         // Exit
         m_Running = false;

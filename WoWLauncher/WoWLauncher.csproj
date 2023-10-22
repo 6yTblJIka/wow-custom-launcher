@@ -1,108 +1,110 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <UseWPF>true</UseWPF>
-    <Title>World of Warcraft Launcher</Title>
-    <Authors>MadBuffoon</Authors>
-    <Company>Private Server Company</Company>
-    <PackageProjectUrl></PackageProjectUrl>
-    <PackageIcon>app.png</PackageIcon>
-    <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
-    <ApplicationIcon>wow_app.ico</ApplicationIcon>
-    <AssemblyName>$(MSBuildProjectName)</AssemblyName>
-    <IsPublishable>True</IsPublishable>
-    <Product>Launcher</Product>
-    <Copyright></Copyright>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>4.7</Version>
-    <RepositoryUrl></RepositoryUrl>
-    <RepositoryType></RepositoryType>
-    <BaseOutputPath>F:\Games\World of Warcraft\Coding\WoWUpdater\Build</BaseOutputPath>
-    <AssemblyVersion></AssemblyVersion>
-    <FileVersion></FileVersion>
-    <PublicSign>false</PublicSign>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net6.0-windows</TargetFramework>
+        <Nullable>enable</Nullable>
+        <UseWPF>true</UseWPF>
+        <Title>World of Warcraft Launcher</Title>
+        <Authors>MadBuffoon</Authors>
+        <Company>Private Server Company</Company>
+        <PackageProjectUrl></PackageProjectUrl>
+        <PackageIcon>app.png</PackageIcon>
+        <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
+        <ApplicationIcon>wow_app.ico</ApplicationIcon>
+        <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+        <IsPublishable>True</IsPublishable>
+        <Product>Launcher</Product>
+        <Copyright></Copyright>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <Version>4.9</Version>
+        <RepositoryUrl></RepositoryUrl>
+        <RepositoryType></RepositoryType>
+        <BaseOutputPath>F:\Games\World of Warcraft\Coding\WoWUpdater\Build</BaseOutputPath>
+        <AssemblyVersion></AssemblyVersion>
+        <FileVersion></FileVersion>
+        <PublicSign>false</PublicSign>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>none</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DebugType>none</DebugType>
+        <PlatformTarget>AnyCPU</PlatformTarget>
+    </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType>none</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <OutputPath>F:\Games\World of Warcraft\Coding\Build\Release\</OutputPath>
-  </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DebugType>none</DebugType>
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <OutputPath>F:\Games\World of Warcraft\Coding\Build\Release\</OutputPath>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="images\Button-Click.png" />
-    <None Remove="images\Button-Disabled.png" />
-    <None Remove="images\Button-Hover.png" />
-    <None Remove="images\Button.png" />
-    <None Remove="images\Close-Click.PNG" />
-    <None Remove="images\Close-Hover.png" />
-    <None Remove="images\Close.PNG" />
-    <None Remove="images\Indicator-Green.PNG" />
-    <None Remove="images\Indicator-Red.PNG" />
-    <None Remove="images\Indicator-Yellow.PNG" />
-    <None Remove="images\PatchBar.png" />
-    <None Remove="images\Window.png" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Remove="images\Button-Click.png"/>
+        <None Remove="images\Button-Disabled.png"/>
+        <None Remove="images\Button-Hover.png"/>
+        <None Remove="images\Button.png"/>
+        <None Remove="images\Close-Click.PNG"/>
+        <None Remove="images\Close-Hover.png"/>
+        <None Remove="images\Close.PNG"/>
+        <None Remove="images\Indicator-Green.PNG"/>
+        <None Remove="images\Indicator-Red.PNG"/>
+        <None Remove="images\Indicator-Yellow.PNG"/>
+        <None Remove="images\PatchBar.png"/>
+        <None Remove="images\Window.png"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="wow_app.ico" />
-  </ItemGroup>
+    <ItemGroup>
+        <Content Include="wow_app.ico"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Resource Include="images\Button-Click.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\Button-Disabled.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\Button-Hover.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\Button.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\Close-Click.PNG">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\Close-Hover.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\Close.PNG">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\Indicator-Green.PNG">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\Indicator-Red.PNG">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\Indicator-Yellow.PNG">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\PatchBar.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="images\Window.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
+    <ItemGroup>
+        <Resource Include="images\Button-Click.png">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </Resource>
+        <Resource Include="images\Button-Disabled.png">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </Resource>
+        <Resource Include="images\Button-Hover.png">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </Resource>
+        <Resource Include="images\Button.png">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </Resource>
+        <Resource Include="images\Close-Click.PNG">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </Resource>
+        <Resource Include="images\Close-Hover.png">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </Resource>
+        <Resource Include="images\Close.PNG">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </Resource>
+        <Resource Include="images\Indicator-Green.PNG">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </Resource>
+        <Resource Include="images\Indicator-Red.PNG">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </Resource>
+        <Resource Include="images\Indicator-Yellow.PNG">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </Resource>
+        <Resource Include="images\PatchBar.png">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </Resource>
+        <Resource Include="images\Window.png">
+            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        </Resource>
+        <None Remove="images\TextInput.png"/>
+        <Resource Include="images\TextInput.png"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\Resources\app.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="..\Resources\app.png">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+    </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Properties\" />
-  </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Properties\"/>
+    </ItemGroup>
 </Project>

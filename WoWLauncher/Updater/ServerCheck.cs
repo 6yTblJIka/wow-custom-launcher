@@ -1,101 +1,102 @@
 ﻿using System;
 using System.Net.Sockets;
-using System.Threading;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
-namespace WoWLauncher.Updater
+namespace WoWLauncher.Updater;
+
+/// <summary>
+///     Responsible for announcing server status.
+/// </summary>
+internal class ServerCheck
 {
-    /// <summary>
-    /// Responsible for announcing server status.
-    /// </summary>
-    internal class ServerCheck
+    // Data
+    private readonly UpdateController m_UpdaterRef;
+
+    // Reference parent window
+    private readonly MainWindow m_WndRef;
+
+    public ServerCheck(MainWindow _wndRef, ref UpdateController _updater)
     {
-        // Reference parent window
-        private MainWindow m_WndRef;
+        m_WndRef = _wndRef;
 
-        // Data
-        private UpdateController m_UpdaterRef;
+        // Let's keep a reference to the updater for the server address
+        m_UpdaterRef = _updater;
 
-        public ServerCheck(MainWindow _wndRef, ref UpdateController _updater)
+        // Check server status every 1 minute
+        DispatcherTimer timer = new()
         {
-            m_WndRef = _wndRef;
+            Interval = TimeSpan.FromSeconds(60)
+        };
+        timer.Tick += CheckServerStatus;
+        timer.Start();
 
-            // Let's keep a reference to the updater for the server address
-            m_UpdaterRef = _updater;
+        // Update status icons
+        m_WndRef.serverStatusIcon.Source =
+            new BitmapImage(new Uri(@"/WoWLauncher;component/images/Indicator-Yellow.png", UriKind.Relative));
+        m_WndRef.serverStatus.Content = "Checking server status...";
 
-            // Check server status every 1 minute
-            DispatcherTimer timer = new()
-            {
-                Interval = TimeSpan.FromSeconds(60),
-            };
-            timer.Tick += CheckServerStatus;
-            timer.Start();
+        // Begin checking immediately
+        CheckServerStatus(null, null);
+    }
 
-            // Update status icons
-            m_WndRef.serverStatusIcon.Source = new BitmapImage(new Uri(@"/WoWLauncher;component/images/Indicator-Yellow.png", UriKind.Relative));
-            m_WndRef.serverStatus.Content = "Checking server status...";
+    /// <summary>
+    ///     Checks server status
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void CheckServerStatus(object? sender, EventArgs? e)
+    {
+        bool _serverAvailable;
 
-            // Begin checking immediately
-            CheckServerStatus(null, null);
-        }
-
-        /// <summary>
-        /// Checks server status
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CheckServerStatus(object? sender, EventArgs? e)
+        try
         {
-            bool _serverAvailable;
+            // Create a simple TCP client to ping a port
+            var host = m_UpdaterRef.RealmAddress ?? "MadClownWorld.com";
+            using var _tcpClient = new TcpClient();
+            var _asyncConnectionResult = _tcpClient.BeginConnect(host, 8085, null, null);
+            var _asyncConnectionWaitHandle = _asyncConnectionResult.AsyncWaitHandle;
 
             try
             {
-                // Create a simple TCP client to ping a port
-                var host = m_UpdaterRef.RealmAddress ?? "MadClownWorld.com";
-                using TcpClient _tcpClient = new TcpClient();
-                IAsyncResult _asyncConnectionResult = _tcpClient.BeginConnect(host, 8085, null, null);
-                WaitHandle _asyncConnectionWaitHandle = _asyncConnectionResult.AsyncWaitHandle;
-
-                try
+                // Allow to time-out after 5 seconds
+                if (!_asyncConnectionWaitHandle.WaitOne(TimeSpan.FromMilliseconds(5000), false))
                 {
-                    // Allow to time-out after 5 seconds
-                    if (!_asyncConnectionWaitHandle.WaitOne(TimeSpan.FromMilliseconds(5000), false))
-                    {
-                        _tcpClient.EndConnect(_asyncConnectionResult);
-                        _tcpClient.Close();
-                        throw new SocketException();
-                    }
-
-                    // Looks like there's response. The server is alive!
-                    _serverAvailable = true;
                     _tcpClient.EndConnect(_asyncConnectionResult);
+                    _tcpClient.Close();
+                    throw new SocketException();
                 }
-                finally
-                {
-                    // Regardless of response, we'll stop connection
-                    _asyncConnectionWaitHandle.Close();
-                }
-            }
-            catch
-            {
-                // Some kind of error prevents us, we'll assume it's inaccessible
-                _serverAvailable = false;
-            }
 
-            // Update texts and graphics
-            if (_serverAvailable)
-            {
-                m_WndRef.serverStatusIcon.Source = new BitmapImage(new Uri(@"/WoWLauncher;component/images/Indicator-Green.png", UriKind.Relative));
-                m_WndRef.serverStatus.Content = "Server online!";
-                // we don't enable play button here as patcher may still be active, it will enable it elsewhere 
+                // Looks like there's response. The server is alive!
+                _serverAvailable = true;
+                _tcpClient.EndConnect(_asyncConnectionResult);
             }
-            else
+            finally
             {
-                m_WndRef.serverStatusIcon.Source = new BitmapImage(new Uri(@"/WoWLauncher;component/images/Indicator-Red.png", UriKind.Relative));
-                m_WndRef.serverStatus.Content = "Server offline.";
-                m_WndRef.playBtn.IsEnabled = false;
+                // Regardless of response, we'll stop connection
+                _asyncConnectionWaitHandle.Close();
             }
+        }
+        catch
+        {
+            // Some kind of error prevents us, we'll assume it's inaccessible
+            _serverAvailable = false;
+        }
+
+        // Update texts and graphics
+        if (_serverAvailable)
+        {
+            m_WndRef.serverStatusIcon.Source =
+                new BitmapImage(new Uri(@"/WoWLauncher;component/images/Indicator-Green.png", UriKind.Relative));
+            m_WndRef.serverStatus.Content = "Server online!";
+            // we don't enable play button here as patcher may still be active, it will enable it elsewhere 
+        }
+        else
+        {
+            m_WndRef.serverStatusIcon.Source =
+                new BitmapImage(new Uri(@"/WoWLauncher;component/images/Indicator-Red.png", UriKind.Relative));
+            m_WndRef.serverStatus.Content = "Server offline.";
+            m_WndRef.playBtn.IsEnabled = false;
         }
     }
 }
