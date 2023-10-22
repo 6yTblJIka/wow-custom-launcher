@@ -17,7 +17,7 @@
         <Product>Launcher</Product>
         <Copyright></Copyright>
         <ApplicationManifest>app.manifest</ApplicationManifest>
-        <Version>5.3</Version>
+        <Version>5.4</Version>
         <RepositoryUrl></RepositoryUrl>
         <RepositoryType></RepositoryType>
         <BaseOutputPath>F:\Games\World of Warcraft\Coding\WoWUpdater\Build</BaseOutputPath>
@@ -38,22 +38,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Remove="images\Button-Click.png"/>
-        <None Remove="images\Button-Disabled.png"/>
-        <None Remove="images\Button-Hover.png"/>
-        <None Remove="images\Button.png"/>
-        <None Remove="images\Close-Click.PNG"/>
-        <None Remove="images\Close-Hover.png"/>
-        <None Remove="images\Close.PNG"/>
-        <None Remove="images\Indicator-Green.PNG"/>
-        <None Remove="images\Indicator-Red.PNG"/>
-        <None Remove="images\Indicator-Yellow.PNG"/>
-        <None Remove="images\PatchBar.png"/>
-        <None Remove="images\Window.png"/>
+        <None Remove="images\Button-Click.png" />
+        <None Remove="images\Button-Disabled.png" />
+        <None Remove="images\Button-Hover.png" />
+        <None Remove="images\Button.png" />
+        <None Remove="images\Close-Click.PNG" />
+        <None Remove="images\Close-Hover.png" />
+        <None Remove="images\Close.PNG" />
+        <None Remove="images\Indicator-Green.PNG" />
+        <None Remove="images\Indicator-Red.PNG" />
+        <None Remove="images\Indicator-Yellow.PNG" />
+        <None Remove="images\PatchBar.png" />
+        <None Remove="images\Window.png" />
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="wow_app.ico"/>
+        <Content Include="wow_app.ico" />
     </ItemGroup>
 
     <ItemGroup>
@@ -93,8 +93,8 @@
         <Resource Include="images\Window.png">
             <CopyToOutputDirectory>Never</CopyToOutputDirectory>
         </Resource>
-        <None Remove="images\TextInput.png"/>
-        <Resource Include="images\TextInput.png"/>
+        <None Remove="images\TextInput.png" />
+        <Resource Include="images\TextInput.png" />
     </ItemGroup>
 
     <ItemGroup>
@@ -105,6 +105,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Properties\"/>
+        <Folder Include="Properties\" />
     </ItemGroup>
 </Project>

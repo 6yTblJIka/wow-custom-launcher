@@ -81,7 +81,7 @@ internal class PatchController
 
     private void AddFileToCache(string filename, string checksum)
     {
-        if (!fileHashCache.ContainsKey(filename)) fileHashCache[filename] = checksum;
+        fileHashCache[filename] = checksum;
     }
 
     private void LoadCache()
@@ -118,10 +118,39 @@ internal class PatchController
             // Prepare folder
             if (!Directory.Exists("Cache/Hash"))
                 Directory.CreateDirectory("Cache/Hash");
-            // Save the cache to a text file
-            using (var writer = new StreamWriter("Cache/Hash/Cache.txt"))
+
+            string cacheFilePath = "Cache/Hash/Cache.txt";
+            var existingCache = new Dictionary<string, string>();
+
+            // Read the existing cache, if it exists
+            if (File.Exists(cacheFilePath))
             {
-                foreach (var entry in fileHashCache) writer.WriteLine($"{entry.Key.ToLower()},{entry.Value}");
+                var lines = File.ReadAllLines(cacheFilePath);
+                foreach (var line in lines)
+                {
+                    var parts = line.Split(',');
+                    if (parts.Length == 2)
+                    {
+                        var filename = parts[0];
+                        var checksum = parts[1];
+                        existingCache[filename] = checksum;
+                    }
+                }
+            }
+
+            // Update or add the entries from your current cache
+            foreach (var entry in fileHashCache)
+            {
+                existingCache[entry.Key] = entry.Value;
+            }
+
+            // Save the updated cache to a text file
+            using (var writer = new StreamWriter(cacheFilePath))
+            {
+                foreach (var entry in existingCache)
+                {
+                    writer.WriteLine($"{entry.Key},{entry.Value}");
+                }
             }
 
             Log("Saving Cache");
@@ -132,6 +161,7 @@ internal class PatchController
             Log("Error saving cache: " + ex.Message);
         }
     }
+
 
     private void Log(string message)
     {
@@ -354,7 +384,6 @@ internal class PatchController
         {
             Log($"Patch {patchName} missing");
         }
-
         // Check if the given patch actually exists on server?
         var url = $"{m_PatchUri}{patchName}";
         Log($"Downloading {patchName} {url}");
@@ -394,14 +423,25 @@ internal class PatchController
     /// <param name="e"></param>
     private void patch_DonePatchesAsync(object? sender, AsyncCompletedEventArgs e)
     {
+        Log($"Download Completed");
+        var patchName = m_Patches[m_PatchIndex].Filename.ToLower();
+        var patchHash = m_Patches[m_PatchIndex].Checksum;
         if (m_PatchIndex >= 0 && m_PatchIndex < m_Patches.Count)
+        {
             // Add the downloaded file to the cache
-            AddFileToCache(m_Patches[m_PatchIndex].Filename.ToLower(), m_Patches[m_PatchIndex].Checksum);
+            AddFileToCache(patchName, patchHash);
+            SaveCache();
+        }
+
         m_PatchIndex++;
         if (m_PatchIndex >= m_Patches.Count)
+        {
             FinishPatch();
+        }
         else
+        {
             DownloadPatch(m_PatchIndex);
+        }
     }
 
     /// <summary>
