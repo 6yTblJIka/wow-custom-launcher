@@ -182,6 +182,8 @@ internal class PatchController
                 Directory.CreateDirectory("Cache/L");
             if (File.Exists("Cache/L/plist.txt"))
                 File.Delete("Cache/L/plist.txt");
+            if (File.Exists("Cache/L/patching"))
+                File.Delete("Cache/L/patching");
             if (File.Exists("Cache/Hash/Cache.txt"))
                 LoadCache();
             if (!Directory.Exists("Logs"))
@@ -289,6 +291,12 @@ internal class PatchController
         var mappedValue = Map(originalValue, minValue, maxValue, newMinValue, newMaxValue);
 
         Log($"Checking Patch? {m_PatchIndex + 1} / {m_Patches.Count} {patchName}");
+        if (!Directory.Exists("Data"))
+        {
+            CheckPatch();
+            return;
+        }
+
         // Check if this patch was already downloaded previously
         // Update texts
         m_WndRef.progressInfo.IsEnabled = true;
