@@ -15,9 +15,10 @@ namespace WoWLauncher.Patcher;
 /// </summary>
 internal class PatchController
 {
+    private readonly string CacheFilePath = "Cache/Hash/Cache.txt";
+
     // Cache for file MD5 hashes
     private readonly Dictionary<string, string> fileHashCache;
-    private readonly string CacheFilePath = "Cache/Hash/Cache.txt";
 
     // Log file path
     private readonly string logFilePath = "Logs/Launcher_log.log";
@@ -120,7 +121,7 @@ internal class PatchController
             if (!Directory.Exists("Cache/Hash"))
                 Directory.CreateDirectory("Cache/Hash");
 
-            string cacheFilePath = CacheFilePath;
+            var cacheFilePath = CacheFilePath;
             var existingCache = new Dictionary<string, string>();
 
             // Read the existing cache, if it exists
@@ -140,18 +141,12 @@ internal class PatchController
             }
 
             // Update or add the entries from your current cache
-            foreach (var entry in fileHashCache)
-            {
-                existingCache[entry.Key] = entry.Value;
-            }
+            foreach (var entry in fileHashCache) existingCache[entry.Key] = entry.Value;
 
             // Save the updated cache to a text file
             using (var writer = new StreamWriter(cacheFilePath))
             {
-                foreach (var entry in existingCache)
-                {
-                    writer.WriteLine($"{entry.Key},{entry.Value}");
-                }
+                foreach (var entry in existingCache) writer.WriteLine($"{entry.Key},{entry.Value}");
             }
 
             Log("Saving Cache");
@@ -185,6 +180,8 @@ internal class PatchController
         {
             // Reset and hide the progress info
             m_WndRef.progressInfo.IsEnabled = false;
+            m_WndRef.progressInfo2.IsEnabled = false;
+            m_WndRef.progressInfo3.IsEnabled = false;
             m_WndRef.progressBar.Value = 0;
 
             // Check if patch list exists
@@ -199,14 +196,22 @@ internal class PatchController
                 m_WndRef.progressBar.Value = 100;
                 m_WndRef.playBtn.IsEnabled = true;
                 m_WndRef.progressInfo.Visibility = Visibility.Visible;
+                m_WndRef.progressInfo2.Visibility = Visibility.Visible;
+                m_WndRef.progressInfo3.Visibility = Visibility.Visible;
                 m_WndRef.progressInfo.Content = "Unable to download patch list!";
+                m_WndRef.progressInfo2.Content = " ";
+                m_WndRef.progressInfo3.Content = " ";
                 m_DownloadStopWatch.Reset();
                 return;
             }
 
             // Update texts
             m_WndRef.progressInfo.Visibility = Visibility.Visible;
+            m_WndRef.progressInfo2.Visibility = Visibility.Visible;
+            m_WndRef.progressInfo3.Visibility = Visibility.Visible;
             m_WndRef.progressInfo.Content = "Getting patch list...";
+            m_WndRef.progressInfo2.Content = " ";
+            m_WndRef.progressInfo3.Content = " ";
 
             // Prepare folders
             if (!Directory.Exists("Cache/L"))
@@ -260,6 +265,8 @@ internal class PatchController
                 // Begin the patch, start with first line
                 m_PatchIndex = 0;
                 m_WndRef.progressInfo.Content = "0% (Patch ?/?, downloaded 0/0 MB at 0 Mb/s)";
+                m_WndRef.progressInfo2.Content = " ";
+                m_WndRef.progressInfo3.Content = " ";
                 // Create recovery flag
                 File.WriteAllText("Cache/L/patching", m_Patches[m_PatchIndex].Filename.ToLower());
                 // Begin patching
@@ -279,20 +286,35 @@ internal class PatchController
     /// </summary>
     /// <param name="_list">Raw patch list</param>
     /// <returns>Organized patch data structre</returns>
-    private List<PatchData> PreparePatchList(IEnumerable<string> _list)
+    private List<PatchData> PreparePatchList(IEnumerable<string> list)
     {
-        m_Patches = new List<PatchData>();
-        foreach (var _patch in _list)
+        if (list == null)
         {
-            var _data = _patch.Split(' ');
-            m_Patches.Add(new PatchData
-            {
-                Filename = _data[0].ToLower(),
-                Checksum = _data[1]
-            });
+            throw new ArgumentNullException(nameof(list));
         }
 
-        return m_Patches;
+        var patches = new List<PatchData>();
+
+        foreach (var patch in list)
+        {
+            var data = patch?.Split(' ');
+
+            if (data != null && data.Length >= 3)
+            {
+                patches.Add(new PatchData
+                {
+                    Filename = data[0]?.ToLower(),
+                    Checksum = data[1],
+                    Link = data[2]
+                });
+            }
+            else
+            {
+                // Handle invalid or missing data
+            }
+        }
+
+        return patches;
     }
 
     /// <summary>
@@ -313,6 +335,7 @@ internal class PatchController
     {
         var patchName = m_Patches[m_PatchIndex].Filename.ToLower();
         var patchHash = m_Patches[m_PatchIndex].Checksum;
+        var patchLink = m_Patches[m_PatchIndex].Link;
         double originalValue = m_PatchIndex; // Your original value in the range 0 to 30
         double minValue = 0; // Minimum value of the original range
         double maxValue = m_Patches.Count; // Maximum value of the original range
@@ -321,7 +344,7 @@ internal class PatchController
 
         var mappedValue = Map(originalValue, minValue, maxValue, newMinValue, newMaxValue);
 
-        Log($"Checking Patch? {m_PatchIndex + 1} / {m_Patches.Count} {patchName}");
+        Log($"Checking File? {m_PatchIndex + 1} / {m_Patches.Count} {patchName}");
         if (!Directory.Exists("Data"))
         {
             CheckPatch();
@@ -331,9 +354,14 @@ internal class PatchController
         // Check if this patch was already downloaded previously
         // Update texts
         m_WndRef.progressInfo.IsEnabled = true;
+        m_WndRef.progressInfo2.IsEnabled = true;
+        m_WndRef.progressInfo3.IsEnabled = true;
         m_WndRef.progressBar.Value = mappedValue;
         m_WndRef.progressInfo.Visibility = Visibility.Visible;
+        m_WndRef.progressInfo2.Visibility = Visibility.Visible;
         m_WndRef.progressInfo.Content = $"Checking Patch {m_PatchIndex + 1} / {m_Patches.Count} {patchName}";
+        m_WndRef.progressInfo2.Content = " ";
+        m_WndRef.progressInfo3.Content = " ";
         await Task.Delay(50);
 
         if (File.Exists($"Data/{patchName}"))
@@ -385,20 +413,61 @@ internal class PatchController
         {
             Log($"Patch {patchName} missing");
         }
+
         // Check if the given patch actually exists on server?
-        var url = $"{m_PatchUri}{patchName}";
+        var url = $"{patchLink}";
+        var urlBackup = $"{m_PatchUri}{patchName}";
         Log($"Downloading {patchName} {url}");
-        var request = WebRequest.Create(url);
+        HttpWebRequest request = null;
+
         try
         {
-            var response = (HttpWebResponse)request.GetResponse();
+            request = (HttpWebRequest)WebRequest.Create(url);
+            request.Timeout = 10000; // Set the timeout to 10 seconds
         }
-        catch
+        catch (Exception ex)
         {
-            // Stop process.
-            FinishPatch();
-            return;
+            Log($"Error creating request for primary URL: {ex.Message}");
         }
+
+        if (request != null)
+        {
+            try
+            {
+                var response = (HttpWebResponse)request.GetResponse();
+                // Continue with your download logic here
+            }
+            catch (Exception ex)
+            {
+                // Handle the error with the primary URL
+                Log($"Primary URL Error: {ex.Message}");
+
+                // Retry with the backup URL
+                Log($"Retrying with backup URL {urlBackup}");
+
+                try
+                {
+                    var requestBackup = (HttpWebRequest)WebRequest.Create(urlBackup);
+                    requestBackup.Timeout = 10000; // Set the timeout to 10 seconds for the backup URL
+                    var responseBackup = (HttpWebResponse)requestBackup.GetResponse();
+                    // Continue with your download logic using the backup URL here
+                }
+                catch (Exception exBackup)
+                {
+                    // Handle the error with the backup URL, e.g., log the error or finish the patch
+                    Log($"Backup URL Error: {exBackup.Message}");
+                    Log("Failed to fully update client. Try again.");
+                    FinishPatch();
+                }
+            }
+        }
+        else
+        {
+            // Handle the case where creating the request for the primary URL failed
+            FinishPatch();
+        }
+
+
 
         // Update recovery flag
         File.WriteAllText("Cache/L/patching", patchName);
@@ -424,7 +493,7 @@ internal class PatchController
     /// <param name="e"></param>
     private void patch_DonePatchesAsync(object? sender, AsyncCompletedEventArgs e)
     {
-        Log($"Download Completed");
+        Log("Download Completed");
         var patchName = m_Patches[m_PatchIndex].Filename.ToLower();
         var patchHash = m_Patches[m_PatchIndex].Checksum;
         if (m_PatchIndex >= 0 && m_PatchIndex < m_Patches.Count)
@@ -436,13 +505,9 @@ internal class PatchController
 
         m_PatchIndex++;
         if (m_PatchIndex >= m_Patches.Count)
-        {
             FinishPatch();
-        }
         else
-        {
             DownloadPatch(m_PatchIndex);
-        }
     }
 
     /// <summary>
@@ -454,6 +519,8 @@ internal class PatchController
         m_WndRef.progressBar.Value = 100;
         m_WndRef.playBtn.IsEnabled = true;
         m_WndRef.progressInfo.Visibility = Visibility.Hidden;
+        m_WndRef.progressInfo2.Visibility = Visibility.Hidden;
+        m_WndRef.progressInfo3.Visibility = Visibility.Hidden;
 
         // Reset download data and flags
         IsPatching = false;
@@ -476,9 +543,22 @@ internal class PatchController
     /// <param name="e"></param>
     private void patch_GetPatchesAsync(object sender, DownloadProgressChangedEventArgs e)
     {
-        m_WndRef.progressInfo.Content =
-            $"{e.ProgressPercentage}% (Patch {m_PatchIndex + 1}/{m_Patches.Count} {m_Patches[m_PatchIndex].Filename.ToLower()}, downloaded {e.BytesReceived / 1024f / 1024f:0.0}/{e.TotalBytesToReceive / 1024f / 1024f:0.0} MB at {(e.BytesReceived / 1024f / 1024f / m_DownloadStopWatch.Elapsed.TotalSeconds).ToString("0.0")} Mb/s)";
+        var patchName = m_Patches[m_PatchIndex].Filename.ToLower();
+        var patchSizeMB = e.TotalBytesToReceive / (1024f * 1024f);
+        var downloadedMB = e.BytesReceived / (1024f * 1024f);
+        var downloadSpeed = downloadedMB / m_DownloadStopWatch.Elapsed.TotalSeconds;
+
+        //Calculate the remaining time
+       double remainingSeconds = (patchSizeMB - downloadedMB) / downloadSpeed;
+
+        // Format the remaining time as hh:mm:ss
+        var eta = TimeSpan.FromSeconds(remainingSeconds).ToString(@"h\h\ m\m\ s\s");
+        
+        
         m_WndRef.progressBar.Value = e.ProgressPercentage;
+        m_WndRef.progressInfo.Content = $"{e.ProgressPercentage}% (File {m_PatchIndex + 1}/{m_Patches.Count} {patchName}) ETA: {eta}";
+        m_WndRef.progressInfo2.Content = $"Downloading {downloadSpeed:0.0} Mb/s";
+        m_WndRef.progressInfo3.Content = $"{downloadedMB:0.0} MB/{patchSizeMB:0.0} MB";
     }
 
     /// <summary>
@@ -488,5 +568,6 @@ internal class PatchController
     {
         public string Filename;
         public string Checksum;
+        public string Link;
     }
 }

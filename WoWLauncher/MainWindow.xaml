@@ -219,9 +219,17 @@
                 </Paragraph>
             </FlowDocument>
         </RichTextBox>
-        <Label x:Name="progressInfo" Content="0% (Downloaded 0/0 MB, 0 Mb/s)" HorizontalAlignment="Left"
-               Margin="80,564,0,0" VerticalAlignment="Top" Width="537" Foreground="#FF4ABDE4"
-               FontFamily="Californian FB" Visibility="Hidden" />
+        <Label x:Name="progressInfo" Content="INFO" HorizontalAlignment="Left"
+               Margin="80,564,0,0" VerticalAlignment="Top" Width="415" Foreground="#FF4ABDE4"
+               FontFamily="Californian FB" FontWeight="Bold" FontSize="15" Visibility="Hidden" />
+        <Label x:Name="progressInfo2" Content="INFO" HorizontalAlignment="Left"
+               Margin="80,585,0,0" VerticalAlignment="Top" Width="162" Foreground="#FF4ABDE4"
+               FontFamily="Californian FB" FontWeight="Bold" FontSize="15" Visibility="Hidden" />
+        <Label x:Name="progressInfo3" Content="INFO" HorizontalAlignment="Right"
+               Margin="0,585,450,0" VerticalAlignment="Top" Width="162" Foreground="#FF4ABDE4"
+               FontFamily="Californian FB" FontWeight="Bold" FontSize="15"  Visibility="Hidden"
+               HorizontalContentAlignment="Right" />
+        
         <Button Style="{DynamicResource CloseBtn}" HorizontalAlignment="Left" Margin="782,136,0,0"
                 VerticalAlignment="Top" Height="42" Width="43" Foreground="{x:Null}" BorderBrush="{x:Null}"
                 Click="Close_Click">
