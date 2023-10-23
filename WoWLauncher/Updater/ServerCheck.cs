@@ -32,9 +32,9 @@ internal class ServerCheck
         timer.Start();
 
         // Update status icons
-        m_WndRef.serverStatusIcon.Source =
+        m_WndRef.ServerStatusIcon.Source =
             new BitmapImage(new Uri(@"/WoWLauncher;component/images/Indicator-Yellow.png", UriKind.Relative));
-        m_WndRef.serverStatus.Content = "Checking server status...";
+        m_WndRef.ServerStatus.Content = "Checking server status...";
 
         // Begin checking immediately
         CheckServerStatus(null, null);
@@ -86,17 +86,17 @@ internal class ServerCheck
         // Update texts and graphics
         if (_serverAvailable)
         {
-            m_WndRef.serverStatusIcon.Source =
+            m_WndRef.ServerStatusIcon.Source =
                 new BitmapImage(new Uri(@"/WoWLauncher;component/images/Indicator-Green.png", UriKind.Relative));
-            m_WndRef.serverStatus.Content = "Server online!";
+            m_WndRef.ServerStatus.Content = "Server online!";
             // we don't enable play button here as patcher may still be active, it will enable it elsewhere 
         }
         else
         {
-            m_WndRef.serverStatusIcon.Source =
+            m_WndRef.ServerStatusIcon.Source =
                 new BitmapImage(new Uri(@"/WoWLauncher;component/images/Indicator-Red.png", UriKind.Relative));
-            m_WndRef.serverStatus.Content = "Server offline.";
-            m_WndRef.playBtn.IsEnabled = false;
+            m_WndRef.ServerStatus.Content = "Server offline.";
+            m_WndRef.PlayBtn.IsEnabled = false;
         }
     }
 }

@@ -155,7 +155,7 @@
     <Grid>
         <Image MouseDown="Window_MouseDown" HorizontalAlignment="Left" Height="639" VerticalAlignment="Top" Width="867"
                Source="/WoWLauncher;component/images/Window.png" Stretch="None" Margin="1,0,0,0" />
-        <Button x:Name="playBtn" Style="{DynamicResource PlayBtn}" Content="Play" HorizontalAlignment="Left"
+        <Button x:Name="PlayBtn" Style="{DynamicResource PlayBtn}" Content="Play" HorizontalAlignment="Left"
                 Margin="635,507,0,0" VerticalAlignment="Top" Height="62" Width="151" IsDefault="True"
                 Foreground="White" BorderBrush="{x:Null}" FontSize="20" FontFamily="Californian FB"
                 FontStretch="Normal" FontWeight="Bold" Click="playBtn_Click">
@@ -163,6 +163,7 @@
                 <ImageBrush ImageSource="/WoWLauncher;component/images/Button.png" Stretch="None" />
             </Button.Background>
         </Button>
+
         <Grid Width="300" Height="35" HorizontalAlignment="Left" Margin="500,576,0,0" VerticalAlignment="Top">
             <Image Source="/WoWLauncher;component/images/TextInput.png" Width="200" Height="35"
                    HorizontalAlignment="Left"
@@ -170,7 +171,7 @@
             <Label Content="Realm List" HorizontalAlignment="Left" Margin="-92,0,0,0"
                    VerticalAlignment="Center" Width="100" FontSize="18" FontWeight="Bold" Foreground="White"
                    FontFamily="Californian FB" />
-            <TextBox Name="textInputBox_Realm" Text="MadClownWorld.com" Width="180" Height="20" Margin="7,0,0,0"
+            <TextBox Name="TextInputBoxRealm" Text="MadClownWorld.com" Width="180" Height="20" Margin="7,0,0,0"
                      HorizontalAlignment="Left"
                      VerticalAlignment="Center" Foreground="White" FontSize="15" FontFamily="Californian FB"
                      FontStretch="Normal" FontWeight="Bold" BorderBrush="Transparent" Background="Transparent" />
@@ -185,13 +186,13 @@
             </Button>
         </Grid>
 
-        <Image x:Name="serverStatusIcon" HorizontalAlignment="Left" Height="20" Margin="80,480,0,0"
+        <Image x:Name="ServerStatusIcon" HorizontalAlignment="Left" Height="20" Margin="80,480,0,0"
                VerticalAlignment="Top" Width="22" Source="/WoWLauncher;component/images/Indicator-Yellow.PNG"
                Stretch="None" />
-        <Label x:Name="serverStatus" Content="Checking server status..." HorizontalAlignment="Left" Margin="99,473,0,0"
+        <Label x:Name="ServerStatus" Content="Checking server status..." HorizontalAlignment="Left" Margin="99,473,0,0"
                VerticalAlignment="Top" Width="249" FontSize="20" FontWeight="Bold" Foreground="White"
                FontFamily="Californian FB" />
-        <ProgressBar x:Name="progressBar" HorizontalAlignment="Left" Height="42" Margin="80,517,0,0"
+        <ProgressBar x:Name="ProgressBar" HorizontalAlignment="Left" Height="42" Margin="80,517,0,0"
                      VerticalAlignment="Top" Width="537" Foreground="#FF06A4B0" BorderThickness="0,0,0,0"
                      Background="#FF192D33" />
         <Image HorizontalAlignment="Left" Height="100" Margin="60,498,0,0" VerticalAlignment="Top" Width="575"
@@ -219,22 +220,30 @@
                 </Paragraph>
             </FlowDocument>
         </RichTextBox>
-        <Label x:Name="progressInfo" Content="INFO" HorizontalAlignment="Left"
+        <Label x:Name="ProgressInfo" Content="INFO" HorizontalAlignment="Left"
                Margin="80,564,0,0" VerticalAlignment="Top" Width="415" Foreground="#FF4ABDE4"
                FontFamily="Californian FB" FontWeight="Bold" FontSize="15" Visibility="Hidden" />
-        <Label x:Name="progressInfo2" Content="INFO" HorizontalAlignment="Left"
+        <Label x:Name="ProgressInfo2" Content="INFO" HorizontalAlignment="Left"
                Margin="80,585,0,0" VerticalAlignment="Top" Width="162" Foreground="#FF4ABDE4"
                FontFamily="Californian FB" FontWeight="Bold" FontSize="15" Visibility="Hidden" />
-        <Label x:Name="progressInfo3" Content="INFO" HorizontalAlignment="Right"
+        <Label x:Name="ProgressInfo3" Content="INFO" HorizontalAlignment="Right"
                Margin="0,585,450,0" VerticalAlignment="Top" Width="162" Foreground="#FF4ABDE4"
-               FontFamily="Californian FB" FontWeight="Bold" FontSize="15"  Visibility="Hidden"
+               FontFamily="Californian FB" FontWeight="Bold" FontSize="15" Visibility="Hidden"
                HorizontalContentAlignment="Right" />
-        
+
         <Button Style="{DynamicResource CloseBtn}" HorizontalAlignment="Left" Margin="782,136,0,0"
                 VerticalAlignment="Top" Height="42" Width="43" Foreground="{x:Null}" BorderBrush="{x:Null}"
                 Click="Close_Click">
             <Button.Background>
                 <ImageBrush ImageSource="/WoWLauncher;component/images/Close.png" Stretch="Uniform" />
+            </Button.Background>
+        </Button>
+        <Button Style="{DynamicResource PlayBtnFill}" Content="CC" HorizontalAlignment="Left"
+                Margin="34,137,0,0" VerticalAlignment="Top" Height="30" Width="40" IsDefault="True"
+                Foreground="White" BorderBrush="{x:Null}" FontSize="15" FontFamily="Californian FB"
+                FontStretch="Normal" FontWeight="Bold" Click="ClearCache_Click">
+            <Button.Background>
+                <ImageBrush ImageSource="/WoWLauncher;component/images/Button.png" Stretch="Fill" />
             </Button.Background>
         </Button>
     </Grid>

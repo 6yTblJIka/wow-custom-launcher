@@ -21,7 +21,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        playBtn.IsEnabled = false; // Disable during checks
+        PlayBtn.IsEnabled = false; // Disable during checks
 
         m_Updater = new UpdateController(this);
         m_Patcher = new PatchController(this);
@@ -38,7 +38,7 @@ public partial class MainWindow : Window
             if (_realmd.Length > 0)
             {
                 var _realmParts = _realmd.Split(' ');
-                textInputBox_Realm.Text = _realmParts[2];
+                TextInputBoxRealm.Text = _realmParts[2];
             }
         }
 
@@ -110,8 +110,27 @@ public partial class MainWindow : Window
 
     private void SubmitButton_Click(object sender, RoutedEventArgs e)
     {
-        var userInput = textInputBox_Realm.Text; // Get the text from the TextBox
-        textInputBox_Realm.Text = "" + userInput;
+        var userInput = TextInputBoxRealm.Text; // Get the text from the TextBox
+        TextInputBoxRealm.Text = "" + userInput;
         UpdateController.SetRealmList(userInput);
+    }
+
+    private void ClearCache_Click(object sender, RoutedEventArgs e)
+    {
+        using (var customMessageBox = new ClearCacheWindow())
+        {
+            var result = customMessageBox.ShowDialog();
+
+            if (result == true)
+            {
+                PatchController.ClearCache();
+                // If the launcher is here (it should be), launch it again
+                if (File.Exists("WoWLauncher.exe"))
+                    Process.Start(new ProcessStartInfo("WoWLauncher.exe")
+                    {
+                        UseShellExecute = true
+                    });
+            }
+        }
     }
 }

@@ -23,9 +23,7 @@ internal class UpdateController
     // Reference parent window
     private readonly MainWindow m_WndRef;
 
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public UpdateController(MainWindow _wndRef)
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     {
         m_WndRef = _wndRef;
         NeedsUpdate = false;
@@ -110,21 +108,21 @@ internal class UpdateController
                 {
                     var _realmParts = _realmd.Split(' ');
                     m_RealmAddress = _realmParts[2];
-                    m_WndRef.textInputBox_Realm.Text = m_RealmAddress;
+                    m_WndRef.TextInputBoxRealm.Text = m_RealmAddress;
                 }
             }
             else // create new dummy file if nothing else exists. Silly.
             {
                 File.WriteAllText("Data/enUS/realmlist.wtf", $"set realmlist {m_RealmAddress}");
-                m_WndRef.textInputBox_Realm.Text = m_RealmAddress;
+                m_WndRef.TextInputBoxRealm.Text = m_RealmAddress;
             }
 
             return;
         }
 
         // Update texts
-        m_WndRef.progressInfo.Visibility = Visibility.Visible;
-        m_WndRef.progressInfo.Content = "Updating server IP...";
+        m_WndRef.ProgressInfo.Visibility = Visibility.Visible;
+        m_WndRef.ProgressInfo.Content = "Updating server IP...";
 
         // Prepare folders
         if (!Directory.Exists("Cache/L"))
