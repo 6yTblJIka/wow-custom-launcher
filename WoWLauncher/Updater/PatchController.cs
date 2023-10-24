@@ -25,7 +25,7 @@ internal class PatchController
     private readonly Stopwatch m_DownloadStopWatch;
 
     // Textfile containing patches (seperated on each line, md5 checksum next to it, e.g: Patch-L.mpq 6fd76dec2bbca6b58c7dce68b497e2bf)
-    private readonly string m_PatchListUri = "http://MadClownWorld.com/Patch/plist.txt";
+    private readonly string m_PatchListUri = "http://MadClownWorld.com/Patch/CheckList.txt";
 
     // Folder containing the individual patches, as listed in the patch list file
     private readonly string m_PatchUri = "http://MadClownWorld.com/Patch/Files/";
@@ -219,6 +219,21 @@ internal class PatchController
             m_WndRef.ProgressInfo3.Content = " ";
 
             // Prepare folders
+            if (File.Exists(CacheFilePath))
+            {
+                DateTime specificDate = new DateTime(2023, 10, 24, 11, 25, 0); // October 31, 2023, 12:00:00 PM
+
+                DateTime fileLastModified = File.GetLastWriteTime(CacheFilePath);
+
+                if (fileLastModified < specificDate)
+                {
+                    File.Delete(CacheFilePath);
+                    Log("You had and old Hash Cache. A New way was made.");
+                }
+                
+            }
+            
+            
             if (!Directory.Exists("Cache/L"))
                 Directory.CreateDirectory("Cache/L");
             if (File.Exists("Cache/L/plist.txt"))
@@ -231,6 +246,9 @@ internal class PatchController
                 Directory.CreateDirectory("Logs");
             if (File.Exists(logFilePath))
                 File.Delete(logFilePath);
+            
+           
+            
 
             // Begin downloading patch list
             using (var wc = new WebClient())
@@ -353,13 +371,12 @@ internal class PatchController
         m_WndRef.ProgressInfo.IsEnabled = true;
         m_WndRef.ProgressInfo2.IsEnabled = true;
         m_WndRef.ProgressInfo3.IsEnabled = true;
-        m_WndRef.ProgressBar.Value = mappedValue;
+        //m_WndRef.ProgressBar.Value = mappedValue;
         m_WndRef.ProgressInfo.Visibility = Visibility.Visible;
         m_WndRef.ProgressInfo2.Visibility = Visibility.Visible;
         m_WndRef.ProgressInfo.Content = $"Checking File {m_PatchIndex + 1} / {m_Patches.Count} {patchName}";
         m_WndRef.ProgressInfo2.Content = " ";
         m_WndRef.ProgressInfo3.Content = " ";
-        await Task.Delay(50);
 
         if (File.Exists($"Data/{patchName}"))
         {
@@ -370,18 +387,70 @@ internal class PatchController
             {
                 Log($"Cache Found: {patchName}");
                 _localHash = GetChecksumFromCache(patchName);
+                m_WndRef.ProgressBar.Value = 100;
+                await Task.Delay(25);
             }
             else
             {
                 Log($"Cache Not Found: {patchName}");
-                using (var _crypto = MD5.Create())
+                await Task.Delay(500); // You can add a delay if needed
+
+                m_WndRef.ProgressBar.Value = 0;
+                string localHash = await Task.Run(async () =>
                 {
-                    using var stream = File.OpenRead($"Data/{patchName}");
-                    _localHash = BitConverter.ToString(_crypto.ComputeHash(stream)).Replace("-", "").ToUpperInvariant();
-                    Log($"Made Hash {_localHash}");
-                    AddFileToCache(patchName, _localHash);
-                    SaveCache();
-                }
+                    using (var _crypto = SHA256.Create())
+                    using (var stream = File.OpenRead($"Data/{patchName}"))
+                    {
+                        long totalBytesRead = 0;
+                        long fileSize = new FileInfo($"Data/{patchName}").Length;
+                        byte[] buffer = new byte[4096];
+                        int updateFrequency = 10000; // Set the frequency of progress updates (e.g., every 4096 bytes)
+                        
+
+
+
+                        int bytesRead;
+                        while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            try
+                            {
+                                _crypto.TransformBlock(buffer, 0, bytesRead, null, 0);
+                                totalBytesRead += bytesRead;
+                                
+                                if (totalBytesRead % updateFrequency == 0)
+                                {
+                                    m_WndRef.Dispatcher.Invoke(() =>
+                                    {
+                                        UpdateSHA256Progress(totalBytesRead, fileSize);
+                                    });
+                                }
+                                
+
+                            }
+                            catch (Exception ex)
+                            {
+                                Log($"Error in SHA-256 hashing: {ex.Message}");
+                                // Handle the exception or log it for further investigation
+                                // You may want to add more specific error handling here
+                            }
+                        }
+
+                        Log("Here 4");
+                        _crypto.TransformFinalBlock(buffer, 0, 0);
+                        byte[] hashBytes = _crypto.Hash;
+
+                        string _localHash = BitConverter.ToString(hashBytes).Replace("-", "").ToUpperInvariant();
+                        Log($"Made Hash {_localHash}");
+                        AddFileToCache(patchName, _localHash);
+                        SaveCache();
+
+                        return _localHash; // Return the computed hash from the task
+                    }
+                });
+
+                _localHash = localHash;
+
+
             }
 
 
@@ -477,6 +546,24 @@ internal class PatchController
             m_DownloadStopWatch.Start();
         }
     }
+    private async Task UpdateSHA256Progress(long totalBytesRead, long fileSize)
+    {
+        if (fileSize > 0)
+        {
+            int percentage = (int)((totalBytesRead * 100) / fileSize);
+
+            // Update the SHA-256 progress on the UI thread using Dispatcher.BeginInvoke
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                // Update UI controls here
+                m_WndRef.ProgressBar.Value = percentage;
+                m_WndRef.ProgressInfo2.Content = $"{percentage}%";
+            }));
+
+        }
+    }
+
+
 
     /// <summary>
     ///     Completed patch, check for next.
@@ -539,6 +626,7 @@ internal class PatchController
         var patchSizeMB = e.TotalBytesToReceive / (1024f * 1024f);
         var downloadedMB = e.BytesReceived / (1024f * 1024f);
         var downloadSpeed = downloadedMB / m_DownloadStopWatch.Elapsed.TotalSeconds;
+        var LeftToDownload = patchSizeMB - downloadedMB;
 
         //Calculate the remaining time
         var remainingSeconds = (patchSizeMB - downloadedMB) / downloadSpeed;
@@ -548,10 +636,9 @@ internal class PatchController
 
 
         m_WndRef.ProgressBar.Value = e.ProgressPercentage;
-        m_WndRef.ProgressInfo.Content =
-            $"{e.ProgressPercentage}% (File {m_PatchIndex + 1}/{m_Patches.Count} {patchName}) ETA: {eta}";
-        m_WndRef.ProgressInfo2.Content = $"Downloading {downloadSpeed:0.0} Mb/s";
-        m_WndRef.ProgressInfo3.Content = $"{downloadedMB:0.0} MB/{patchSizeMB:0.0} MB";
+        m_WndRef.ProgressInfo.Content = $"Downloading {m_PatchIndex + 1}/{m_Patches.Count} {patchName} ETA: {eta}";
+        m_WndRef.ProgressInfo2.Content = $"{e.ProgressPercentage}%    {downloadSpeed:0.0} Mb/s";
+        m_WndRef.ProgressInfo3.Content = $"{LeftToDownload:0.0} MB";
     }
 
     /// <summary>
