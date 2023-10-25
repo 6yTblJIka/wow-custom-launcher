@@ -29,12 +29,13 @@
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <DebugType>none</DebugType>
         <PlatformTarget>AnyCPU</PlatformTarget>
+        <OutputPath />
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <DebugType>none</DebugType>
         <PlatformTarget>AnyCPU</PlatformTarget>
-        <OutputPath>F:\Games\World of Warcraft\Coding\Build\WoWLauncher\</OutputPath>
+        <OutputPath></OutputPath>
     </PropertyGroup>
 
     <ItemGroup>

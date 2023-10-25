@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-      <OutputPath>F:\Games\World of Warcraft\Coding\Build\MakeCheckList\</OutputPath>
+      <OutputPath></OutputPath>
     </PropertyGroup>
 
 </Project>
