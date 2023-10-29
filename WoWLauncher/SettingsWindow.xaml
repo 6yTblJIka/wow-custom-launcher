@@ -1,0 +1,40 @@
+﻿<Window x:Class="WoWLauncher.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:WoWLauncher"
+        mc:Ignorable="d"
+        Title="Settings" Height="200" Width="400">
+    <Grid>
+        <TabControl Margin="0,0,0,20">
+            <TabItem Header="Main">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" MaxHeight="30" />
+                        <RowDefinition Height="Auto" MaxHeight="30" />
+                        <RowDefinition Height="Auto" MaxHeight="30" />
+                        <RowDefinition Height="Auto" MaxHeight="30" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" MinWidth="50" MaxWidth="300" />
+                        <ColumnDefinition Width="Auto" MinWidth="200" MaxWidth="300" />
+                        <ColumnDefinition Width="Auto" MinWidth="50" MaxWidth="300" />
+                        <ColumnDefinition Width="Auto" MinWidth="50" MaxWidth="300" />
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- Realm List -->
+                    <TextBlock Grid.Row="0" Grid.Column="0" Margin="5,5" TextAlignment="Center" Text="Realm List" ></TextBlock>
+                    <TextBox Grid.Row="0" Grid.Column="1" Margin="5,5" TextAlignment="Left" Text="N/A" x:Name="RealmList" ></TextBox>
+                    <Button Grid.Row="0" Grid.Column="2" Margin="5,5" Content="Update" Click="UpdateRealmButton_Click" ></Button>
+                    <!-- Account -->
+                    <TextBlock Grid.Row="1" Grid.Column="0" Margin="5,5" TextAlignment="Center" Text="Account" ></TextBlock>
+                    <TextBox Grid.Row="1" Grid.Column="1" Margin="5,5" TextAlignment="Left" Text="N/A" x:Name="AccountName" ></TextBox>
+                    <Button Grid.Row="1" Grid.Column="2" Margin="5,5" Content="Update"  Click="UpdateAccountNameButton_Click" ></Button>
+                    
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <TextBlock Height="20" VerticalAlignment="Bottom" TextAlignment="Left" Margin="0,0,0,0" Text="" x:Name="Inputlog"></TextBlock>
+    </Grid>
+</Window>

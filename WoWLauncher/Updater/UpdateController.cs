@@ -108,13 +108,11 @@ internal class UpdateController
                 {
                     var _realmParts = _realmd.Split(' ');
                     m_RealmAddress = _realmParts[2];
-                    m_WndRef.TextInputBoxRealm.Text = m_RealmAddress;
                 }
             }
             else // create new dummy file if nothing else exists. Silly.
             {
                 File.WriteAllText("Data/enUS/realmlist.wtf", $"set realmlist {m_RealmAddress}");
-                m_WndRef.TextInputBoxRealm.Text = m_RealmAddress;
             }
 
             return;

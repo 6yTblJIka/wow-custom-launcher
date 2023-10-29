@@ -31,16 +31,6 @@ public partial class MainWindow : Window
         m_Updater.CheckForUpdates();
         // Update server address
         m_Updater.RetrieveRealmIP();
-        if (File.Exists("Data/enUS/realmlist.wtf"))
-        {
-            // Read existing file and save it for this session
-            var _realmd = File.ReadAllText("Data/enUS/realmlist.wtf");
-            if (_realmd.Length > 0)
-            {
-                var _realmParts = _realmd.Split(' ');
-                TextInputBoxRealm.Text = _realmParts[2];
-            }
-        }
 
 #if !DEBUG
         // While debugging, we don't need to check this...
@@ -108,11 +98,16 @@ public partial class MainWindow : Window
         }
     }
 
-    private void SubmitButton_Click(object sender, RoutedEventArgs e)
+    private void SettingsButton_Click(object sender, RoutedEventArgs e)
     {
-        var userInput = TextInputBoxRealm.Text; // Get the text from the TextBox
-        TextInputBoxRealm.Text = "" + userInput;
-        UpdateController.SetRealmList(userInput);
+        
+        using (var customMessageBox = new SettingsWindow())
+        {
+            var result = customMessageBox.ShowDialog();
+            if (result == true)
+            {
+            }
+        }
     }
 
     private void ClearCache_Click(object sender, RoutedEventArgs e)

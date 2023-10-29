@@ -17,12 +17,12 @@
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <DebugType>none</DebugType>
-        <OutputPath />
+        <OutputPath>Bin\Debug\</OutputPath>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <DebugType>none</DebugType>
-        <OutputPath></OutputPath>
+        <OutputPath>Bin\Release\</OutputPath>
     </PropertyGroup>
 
 </Project>

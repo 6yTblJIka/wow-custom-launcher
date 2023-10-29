@@ -164,22 +164,11 @@
             </Button.Background>
         </Button>
 
-        <Grid Width="300" Height="35" HorizontalAlignment="Left" Margin="500,576,0,0" VerticalAlignment="Top">
-            <Image Source="/WoWLauncher;component/images/TextInput.png" Width="200" Height="35"
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Center" />
-            <Label Content="Realm List" HorizontalAlignment="Left" Margin="-92,0,0,0"
-                   VerticalAlignment="Center" Width="100" FontSize="18" FontWeight="Bold" Foreground="White"
-                   FontFamily="Californian FB" />
-            <TextBox Name="TextInputBoxRealm" Text="MadClownWorld.com" Width="180" Height="20" Margin="7,0,0,0"
-                     HorizontalAlignment="Left"
-                     VerticalAlignment="Center" Foreground="White" FontSize="15" FontFamily="Californian FB"
-                     FontStretch="Normal" FontWeight="Bold" BorderBrush="Transparent" Background="Transparent" />
-
-            <Button Style="{DynamicResource PlayBtnFill}" Content="Submit" HorizontalAlignment="Right"
+        <Grid Width="100" Height="35" HorizontalAlignment="Left" Margin="665,565,0,0" VerticalAlignment="Top">
+            <Button Style="{DynamicResource PlayBtnFill}" Content="Settings" HorizontalAlignment="Right"
                     Margin="0,0,0,0" VerticalAlignment="Center" Height="30" Width="100" IsDefault="True"
                     Foreground="White" BorderBrush="{x:Null}" FontSize="15" FontFamily="Californian FB"
-                    FontStretch="Normal" FontWeight="Bold" Click="SubmitButton_Click">
+                    FontStretch="Normal" FontWeight="Bold" Click="SettingsButton_Click">
                 <Button.Background>
                     <ImageBrush ImageSource="/WoWLauncher;component/images/Button.png" Stretch="Fill" />
                 </Button.Background>
@@ -227,7 +216,11 @@
                Margin="80,585,0,0" VerticalAlignment="Top" Width="162" Foreground="#FF4ABDE4"
                FontFamily="Californian FB" FontWeight="Bold" FontSize="15" Visibility="Hidden" />
         <Label x:Name="ProgressInfo3" Content="INFO" HorizontalAlignment="Right"
-               Margin="0,585,450,0" VerticalAlignment="Top" Width="162" Foreground="#FF4ABDE4"
+               Margin="0,585,240,0" VerticalAlignment="Top" Width="162" Foreground="#FF4ABDE4"
+               FontFamily="Californian FB" FontWeight="Bold" FontSize="15" Visibility="Hidden"
+               HorizontalContentAlignment="Right" />
+        <Label x:Name="ProgressInfo4" Content="INFO" HorizontalAlignment="Right"
+               Margin="0,560,240,0" VerticalAlignment="Top" Width="162" Foreground="#FF4ABDE4"
                FontFamily="Californian FB" FontWeight="Bold" FontSize="15" Visibility="Hidden"
                HorizontalContentAlignment="Right" />
 

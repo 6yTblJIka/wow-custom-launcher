@@ -203,9 +203,11 @@ internal class PatchController
                 m_WndRef.ProgressInfo.Visibility = Visibility.Visible;
                 m_WndRef.ProgressInfo2.Visibility = Visibility.Visible;
                 m_WndRef.ProgressInfo3.Visibility = Visibility.Visible;
+                m_WndRef.ProgressInfo4.Visibility = Visibility.Visible;
                 m_WndRef.ProgressInfo.Content = "Unable to download patch list!";
                 m_WndRef.ProgressInfo2.Content = " ";
                 m_WndRef.ProgressInfo3.Content = " ";
+                m_WndRef.ProgressInfo4.Content = " ";
                 m_DownloadStopWatch.Reset();
                 return;
             }
@@ -214,9 +216,11 @@ internal class PatchController
             m_WndRef.ProgressInfo.Visibility = Visibility.Visible;
             m_WndRef.ProgressInfo2.Visibility = Visibility.Visible;
             m_WndRef.ProgressInfo3.Visibility = Visibility.Visible;
+            m_WndRef.ProgressInfo4.Visibility = Visibility.Visible;
             m_WndRef.ProgressInfo.Content = "Getting patch list...";
             m_WndRef.ProgressInfo2.Content = " ";
             m_WndRef.ProgressInfo3.Content = " ";
+            m_WndRef.ProgressInfo4.Content = " ";
 
             // Prepare folders
             if (File.Exists(CacheFilePath))
@@ -289,6 +293,7 @@ internal class PatchController
                 m_PatchIndex = 0;
                 m_WndRef.ProgressInfo.Content = "0% (Patch ?/?, downloaded 0/0 MB at 0 Mb/s)";
                 m_WndRef.ProgressInfo2.Content = " ";
+                m_WndRef.ProgressInfo3.Content = " ";
                 m_WndRef.ProgressInfo3.Content = " ";
                 // Create recovery flag
                 File.WriteAllText("Cache/L/patching", m_Patches[m_PatchIndex].Filename.ToLower());
@@ -371,12 +376,16 @@ internal class PatchController
         m_WndRef.ProgressInfo.IsEnabled = true;
         m_WndRef.ProgressInfo2.IsEnabled = true;
         m_WndRef.ProgressInfo3.IsEnabled = true;
+        m_WndRef.ProgressInfo4.IsEnabled = true;
         //m_WndRef.ProgressBar.Value = mappedValue;
         m_WndRef.ProgressInfo.Visibility = Visibility.Visible;
         m_WndRef.ProgressInfo2.Visibility = Visibility.Visible;
+        m_WndRef.ProgressInfo3.Visibility = Visibility.Visible;
+        m_WndRef.ProgressInfo4.Visibility = Visibility.Visible;
         m_WndRef.ProgressInfo.Content = $"Checking File {m_PatchIndex + 1} / {m_Patches.Count} {patchName}";
         m_WndRef.ProgressInfo2.Content = " ";
         m_WndRef.ProgressInfo3.Content = " ";
+        m_WndRef.ProgressInfo4.Content = " ";
 
         if (File.Exists($"Data/{patchName}"))
         {
@@ -600,6 +609,7 @@ internal class PatchController
         m_WndRef.ProgressInfo.Visibility = Visibility.Hidden;
         m_WndRef.ProgressInfo2.Visibility = Visibility.Hidden;
         m_WndRef.ProgressInfo3.Visibility = Visibility.Hidden;
+        m_WndRef.ProgressInfo4.Visibility = Visibility.Hidden;
 
         // Reset download data and flags
         IsPatching = false;
@@ -636,9 +646,10 @@ internal class PatchController
 
 
         m_WndRef.ProgressBar.Value = e.ProgressPercentage;
-        m_WndRef.ProgressInfo.Content = $"Downloading {m_PatchIndex + 1}/{m_Patches.Count} {patchName} ETA: {eta}";
+        m_WndRef.ProgressInfo.Content = $"Downloading {m_PatchIndex + 1}/{m_Patches.Count} {patchName}";
         m_WndRef.ProgressInfo2.Content = $"{e.ProgressPercentage}%    {downloadSpeed:0.0} Mb/s";
         m_WndRef.ProgressInfo3.Content = $"{LeftToDownload:0.0} MB";
+        m_WndRef.ProgressInfo4.Content = $"ETA: {eta}";
     }
 
     /// <summary>
