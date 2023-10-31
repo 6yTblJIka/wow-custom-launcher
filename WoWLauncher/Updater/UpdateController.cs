@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace WoWLauncher.Updater;
@@ -56,35 +57,35 @@ internal class UpdateController
     /// <summary>
     ///     Begin checking for launcher updates.
     /// </summary>
-    public void CheckForUpdates()
+    public async void CheckForUpdates()
+{
+    // Check if update file exists
+    var url = m_UpdateVersionUri;
+    var request = WebRequest.Create(url);
+    try
     {
-        // Check if update file exists
-        var url = m_UpdateVersionUri;
-        var request = WebRequest.Create(url);
-        try
-        {
-            var response = (HttpWebResponse)request.GetResponse();
-        }
-        catch
-        {
-            // Reset and continue business as usual
-            NeedsUpdate = false;
-            return;
-        }
-
-        // Begin downloading update info
-        using (WebClient wc = new())
-        {
-            wc.DownloadStringAsync(new Uri(m_UpdateVersionUri), "Cache/L/version.txt");
-            wc.DownloadStringCompleted += update_DoneRetrieveAsync;
-        }
+        var response = (HttpWebResponse)await request.GetResponseAsync();
     }
+    catch
+    {
+        // Reset and continue business as usual
+        NeedsUpdate = false;
+        return;
+    }
+
+    // Begin downloading update info
+    using (WebClient wc = new WebClient())
+    {
+        wc.DownloadStringCompleted += update_DoneRetrieveAsync;
+        await wc.DownloadStringTaskAsync(new Uri(m_UpdateVersionUri));
+    }
+}
 
 
     /// <summary>
     ///     Retrieve latest game server address.
     /// </summary>
-    public void RetrieveRealmIP()
+    public async Task RetrieveRealmIP()
     {
         // Set default and prepare folders
         m_RealmAddress = "MadClownWorld.com";
@@ -92,17 +93,21 @@ internal class UpdateController
             Directory.CreateDirectory("Data/enUS");
 
         var url = m_ServerAddressUri;
-        var request = WebRequest.Create(url);
+
         try
         {
-            var response = (HttpWebResponse)request.GetResponse();
+            using (var client = new WebClient())
+            {
+                var content = await client.DownloadStringTaskAsync(url);
+                ProcessDownloadedContent(content);
+            }
         }
         catch
         {
-            // No server file online, check if local file exists
+            // No server file online, check if the local file exists
             if (File.Exists("Data/enUS/realmlist.wtf"))
             {
-                // Read existing file and save it for this session
+                // Read the existing file and save it for this session
                 var _realmd = File.ReadAllText("Data/enUS/realmlist.wtf");
                 if (_realmd.Length > 0)
                 {
@@ -110,7 +115,7 @@ internal class UpdateController
                     m_RealmAddress = _realmParts[2];
                 }
             }
-            else // create new dummy file if nothing else exists. Silly.
+            else // create a new dummy file if nothing else exists. Silly.
             {
                 File.WriteAllText("Data/enUS/realmlist.wtf", $"set realmlist {m_RealmAddress}");
             }
@@ -118,6 +123,28 @@ internal class UpdateController
             return;
         }
 
+        // Update texts
+        Application.Current.Dispatcher.Invoke(() =>
+        {
+            m_WndRef.ProgressInfo.Visibility = Visibility.Visible;
+            m_WndRef.ProgressInfo.Content = "Updating server IP...";
+        });
+
+        // Prepare folders
+        if (!Directory.Exists("Cache/L"))
+            Directory.CreateDirectory("Cache/L");
+        if (File.Exists("Cache/L/realm.txt"))
+            File.Delete("Cache/L/realm.txt");
+
+        // Begin downloading server address update
+        using (WebClient wc = new WebClient())
+        {
+            wc.DownloadStringCompleted += realm_DonePatchListAsync;
+            await wc.DownloadStringTaskAsync(new Uri(m_ServerAddressUri));
+        }
+    }
+    private void ProcessDownloadedContent(string content)
+    {
         // Update texts
         m_WndRef.ProgressInfo.Visibility = Visibility.Visible;
         m_WndRef.ProgressInfo.Content = "Updating server IP...";
@@ -128,12 +155,13 @@ internal class UpdateController
         if (File.Exists("Cache/L/realm.txt"))
             File.Delete("Cache/L/realm.txt");
 
-        // Begin downloading server address update
-        using (WebClient wc = new())
-        {
-            wc.DownloadStringAsync(new Uri(m_ServerAddressUri), "Cache/L/realm.txt");
-            wc.DownloadStringCompleted += realm_DonePatchListAsync;
-        }
+        // Process the downloaded content and update your UI
+        // For example, you can parse the content and update m_RealmAddress here
+        // ...
+
+        // You can also start the download of additional resources if needed
+        // using async/await pattern or other asynchronous methods
+        // ...
     }
 
     public static void SetRealmList(string _input)

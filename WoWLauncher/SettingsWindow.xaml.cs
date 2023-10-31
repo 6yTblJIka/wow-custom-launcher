@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using WoWLauncher.Updater;
@@ -72,6 +73,7 @@ public partial class SettingsWindow : IDisposable
         {
             // Read all lines from the file
             var lines = File.ReadAllLines(configFilePath);
+            bool accountNameUpdated = false;
 
             // Iterate through the lines to find and update the account name
             for (int i = 0; i < lines.Length; i++)
@@ -80,8 +82,17 @@ public partial class SettingsWindow : IDisposable
                 {
                     // Replace the existing account name value with the new value
                     lines[i] = "SET accountName \"" + AccountName.Text + "\"";
+                    accountNameUpdated = true;
                     break; // No need to continue searching
                 }
+            }
+
+            if (!accountNameUpdated)
+            {
+                // The "SET accountName" line doesn't exist, so add it to the end of the file
+                var updatedLines = new List<string>(lines);
+                updatedLines.Add("SET accountName \"" + AccountName.Text + "\"");
+                lines = updatedLines.ToArray();
             }
 
             // Write the updated lines back to the file
@@ -90,9 +101,11 @@ public partial class SettingsWindow : IDisposable
         }
         else
         {
-            // File doesn't exist, you may want to handle this case accordingly.
-            Inputlog.Text = "Could not update Account Name";
+            // File doesn't exist, create it and add the "SET accountName" line
+            File.WriteAllText(configFilePath, "SET accountName \"" + AccountName.Text + "\"");
+            Inputlog.Text = "Created and Set Account Name";
         }
     }
+
 
 }

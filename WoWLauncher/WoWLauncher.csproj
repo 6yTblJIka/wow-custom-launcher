@@ -17,7 +17,7 @@
         <Product>Launcher</Product>
         <Copyright></Copyright>
         <ApplicationManifest>app.manifest</ApplicationManifest>
-        <Version>6.2</Version>
+        <Version>6.5</Version>
         <RepositoryUrl></RepositoryUrl>
         <RepositoryType></RepositoryType>
         <BaseOutputPath>F:\Games\World of Warcraft\Coding\WoWUpdater\Build</BaseOutputPath>
@@ -29,7 +29,7 @@
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <DebugType>none</DebugType>
         <PlatformTarget>AnyCPU</PlatformTarget>
-        <OutputPath>BIn\Debug\</OutputPath>
+        <OutputPath>Bin\Debug\</OutputPath>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

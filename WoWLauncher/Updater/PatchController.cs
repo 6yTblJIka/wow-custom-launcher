@@ -179,7 +179,7 @@ internal class PatchController
     ///     Begins checking server for patch files.
     /// </summary>
     /// <param name="_init">Is this the beginning of the check?</param>
-    public void CheckPatch(bool _init = true)
+    public async Task CheckPatch(bool _init = true)
     {
         if (_init)
         {
@@ -193,7 +193,18 @@ internal class PatchController
             var request = WebRequest.Create(m_PatchListUri);
             try
             {
-                var response = (HttpWebResponse)request.GetResponse();
+                var response = await request.GetResponseAsync(); // Use GetResponseAsync for non-blocking operation
+                if (response is HttpWebResponse httpResponse)
+                {
+                    // Handle the response as needed
+                    // For example, you can read the response stream asynchronously
+                    using (var responseStream = httpResponse.GetResponseStream())
+                    using (var reader = new StreamReader(responseStream))
+                    {
+                        var responseContent = await reader.ReadToEndAsync();
+                        // Process the responseContent here
+                    }
+                }
             }
             catch
             {
@@ -204,7 +215,7 @@ internal class PatchController
                 m_WndRef.ProgressInfo2.Visibility = Visibility.Visible;
                 m_WndRef.ProgressInfo3.Visibility = Visibility.Visible;
                 m_WndRef.ProgressInfo4.Visibility = Visibility.Visible;
-                m_WndRef.ProgressInfo.Content = "Unable to download patch list!";
+                m_WndRef.ProgressInfo.Content = "Unable to download Check list!";
                 m_WndRef.ProgressInfo2.Content = " ";
                 m_WndRef.ProgressInfo3.Content = " ";
                 m_WndRef.ProgressInfo4.Content = " ";
@@ -217,7 +228,7 @@ internal class PatchController
             m_WndRef.ProgressInfo2.Visibility = Visibility.Visible;
             m_WndRef.ProgressInfo3.Visibility = Visibility.Visible;
             m_WndRef.ProgressInfo4.Visibility = Visibility.Visible;
-            m_WndRef.ProgressInfo.Content = "Getting patch list...";
+            m_WndRef.ProgressInfo.Content = "Getting Check list...";
             m_WndRef.ProgressInfo2.Content = " ";
             m_WndRef.ProgressInfo3.Content = " ";
             m_WndRef.ProgressInfo4.Content = " ";

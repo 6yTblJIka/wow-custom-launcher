@@ -103,6 +103,8 @@ public partial class MainWindow : Window
         
         using (var customMessageBox = new SettingsWindow())
         {
+            customMessageBox.Owner = this;
+            customMessageBox.WindowStartupLocation = WindowStartupLocation.CenterOwner; // Center the window
             var result = customMessageBox.ShowDialog();
             if (result == true)
             {
@@ -113,7 +115,9 @@ public partial class MainWindow : Window
     private void ClearCache_Click(object sender, RoutedEventArgs e)
     {
         using (var customMessageBox = new ClearCacheWindow())
-        {
+        {   
+            customMessageBox.Owner = this;
+            customMessageBox.WindowStartupLocation = WindowStartupLocation.CenterOwner; // Center the window
             var result = customMessageBox.ShowDialog();
 
             if (result == true)
