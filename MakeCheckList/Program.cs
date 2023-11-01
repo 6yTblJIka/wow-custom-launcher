@@ -14,9 +14,24 @@ internal class Program
         string outputFileName = "CheckList.txt"; // Name of the output text file
         string linksFileName = "FileLinks.txt"; // Name of the file containing links
 
-        string directoryPath = Path.Combine(exeDirectory, checkFolder);
-        string outputFile = Path.Combine(exeDirectory, outputFileName);
-        string linksFile = Path.Combine(exeDirectory, linksFileName);
+        string directoryPath;
+        string outputFile;
+        string linksFile;
+        try
+        {
+
+            directoryPath = Path.Combine(exeDirectory, checkFolder);
+            outputFile = Path.Combine(exeDirectory, outputFileName);
+            linksFile = Path.Combine(exeDirectory, linksFileName);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            Thread.Sleep(1000);
+            directoryPath = checkFolder;
+            outputFile = outputFileName;
+            linksFile = linksFileName;
+        }
 
         try
         {
