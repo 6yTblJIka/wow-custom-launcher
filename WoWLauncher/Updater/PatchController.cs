@@ -547,7 +547,6 @@ internal class PatchController
             }
         else
             // Handle the case where creating the request for the primary URL failed
-            FinishPatch();
 
 
         // Update recovery flag
