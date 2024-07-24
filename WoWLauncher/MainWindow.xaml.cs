@@ -22,11 +22,9 @@ public partial class MainWindow : Window
     private ServerCheck m_ServerCheck;
     public MainWindow()
     {
-        InitializeComponent();
-        if (IsWebView2RuntimeInstalled())
-        {
-            StartWebView();
-        }
+        InitializeComponent(); 
+        StartWebView();
+        
         
         PlayBtn.IsEnabled = false; // Disable during checks
 
@@ -80,10 +78,14 @@ public partial class MainWindow : Window
 
     private async Task StartWebView()
     {
-        if (!Directory.Exists("WoWLauncher.exe.WebView2"))
-            Directory.Delete("WoWLauncher.exe.WebView2");
-        await Task.Delay(1000);
+        if (Directory.Exists("WoWLauncher.exe.WebView2"))
+        {
+            Directory.Delete("WoWLauncher.exe.WebView2", true);
+            await Task.Delay(1000);
+        }
+        await Task.Delay(500);
         InitializeWebView2();
+        
     }
     private async void InitializeWebView2()
     {
