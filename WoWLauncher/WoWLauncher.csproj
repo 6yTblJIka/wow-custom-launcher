@@ -17,7 +17,7 @@
         <Product>Launcher</Product>
         <Copyright></Copyright>
         <ApplicationManifest>app.manifest</ApplicationManifest>
-        <Version>6.7</Version>
+        <Version>7.0</Version>
         <RepositoryUrl></RepositoryUrl>
         <RepositoryType></RepositoryType>
         <BaseOutputPath>F:\Games\World of Warcraft\Coding\WoWUpdater\Build</BaseOutputPath>
@@ -108,13 +108,13 @@
         <Folder Include="Properties\" />
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2592.51" />
-    </ItemGroup>
-    <ItemGroup>
         <None Include="WebView2Files\**\*.*">
             <Pack>True</Pack>
             <PackagePath>WebView2Files\</PackagePath>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+    </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2592.51" />
     </ItemGroup>
 </Project>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Navigation;
@@ -22,7 +23,10 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        InitializeWebView2();
+        if (IsWebView2RuntimeInstalled())
+        {
+            StartWebView();
+        }
         
         PlayBtn.IsEnabled = false; // Disable during checks
 
@@ -61,11 +65,28 @@ public partial class MainWindow : Window
         // Begin checking for game updates
         m_Patcher.CheckPatch();
     }
+    private bool IsWebView2RuntimeInstalled()
+    {
+        try
+        {
+            var version = CoreWebView2Environment.GetAvailableBrowserVersionString();
+            return !string.IsNullOrEmpty(version);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private async Task StartWebView()
+    {
+        if (!Directory.Exists("WoWLauncher.exe.WebView2"))
+            Directory.Delete("WoWLauncher.exe.WebView2");
+        await Task.Delay(1000);
+        InitializeWebView2();
+    }
     private async void InitializeWebView2()
     {
-        //if (!Directory.Exists("WoWLauncher.exe.WebView2"))
-          //  Directory.Delete("WoWLauncher.exe.WebView2");
-        
         await MyWebView2.EnsureCoreWebView2Async(null);
         // Set WebView2 initial URL or content
         MyWebView2.Source = new Uri("http://madclownworld.com/Patch/InfoText.html");

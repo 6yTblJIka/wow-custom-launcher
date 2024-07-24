@@ -197,8 +197,8 @@
                           DefaultBackgroundColor="Transparent"/>
        
             <!-- Adjusted TextBlock control with margin -->
-            <TextBlock Name="ErrorMessage" Text="Server can not be reached at this time." Visibility="Visible"
-                       VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" Foreground="Red"
+            <TextBlock Name="ErrorMessage" Text="Loading..." Visibility="Visible"
+                       VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" Foreground="White"
                        Margin="99,278,100,187" Background="{x:Null}"/>
         </Grid>
         <Label x:Name="ProgressInfo" Content="INFO" HorizontalAlignment="Left"
@@ -216,8 +216,8 @@
                FontFamily="Californian FB" FontWeight="Bold" FontSize="15" Visibility="Hidden"
                HorizontalContentAlignment="Right" />
         
-        <Label x:Name="LauncherVersion" Content=" " HorizontalAlignment="Left" Margin="690,590,0,0"
-               VerticalAlignment="Top" Width="100" FontSize="12" FontWeight="Bold" Foreground="White"
+        <Label x:Name="LauncherVersion" Content="Getting Version..." HorizontalAlignment="Left" Margin="590,592,0,0"
+               VerticalAlignment="Top" Width="200" FontSize="12" FontWeight="Bold" Foreground="White"
                FontFamily="Californian FB" HorizontalContentAlignment="Right" />
         
         <Button Style="{DynamicResource CloseBtn}" HorizontalAlignment="Left" Margin="782,136,0,0"
