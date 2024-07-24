@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         mc:Ignorable="d"
 
         WindowStyle="None" AllowsTransparency="True"
@@ -186,29 +187,20 @@
                      Background="#FF192D33" />
         <Image HorizontalAlignment="Left" Height="100" Margin="60,498,0,0" VerticalAlignment="Top" Width="575"
                Source="/WoWLauncher;component/images/PatchBar.png" />
-
-        <RichTextBox Margin="99,278,100,187" Foreground="White" Background="{x:Null}" BorderBrush="{x:Null}"
-                     SelectionBrush="{x:Null}" IsReadOnly="True" SelectionTextBrush="{x:Null}" Focusable="False"
-                     AllowDrop="False" FontFamily="Californian FB" IsDocumentEnabled="True" Cursor="Arrow">
-            <FlowDocument>
-                <Paragraph TextAlignment="Center">
-                    <Run Text="Welcome to Dinkle WoW a Private Server!" FontSize="32" FontWeight="Bold" />
-                </Paragraph>
-                <Paragraph TextAlignment="Center">
-                    <Run Text="Discord Link, Use bot to account manage." FontSize="18" />
-                    <TextBlock>
-                        <Hyperlink NavigateUri="https://discord.gg/EtfAVb9gDP" FontSize="18" ToolTip="Some Company"
-                                   Foreground="Cyan" RequestNavigate="Hyperlink_RequestNavigate">
-                            https://discord.gg/EtfAVb9gDP
-                        </Hyperlink>
-                    </TextBlock>
-                    <Run Text="." />
-                </Paragraph>
-                <Paragraph TextAlignment="Center">
-                    <Run Text="For assistance, please reach out on the discord server." FontSize="14" />
-                </Paragraph>
-            </FlowDocument>
-        </RichTextBox>
+        
+        <Grid>
+            <!-- Adjusted WebBrowser control with margin -->
+            <wv2:WebView2 Name="MyWebView2" 
+                          NavigationStarting="MyWebView2_NavigationStarting"
+                          Margin="75,255,76,175" 
+                          Visibility="Visible" 
+                          DefaultBackgroundColor="Transparent"/>
+       
+            <!-- Adjusted TextBlock control with margin -->
+            <TextBlock Name="ErrorMessage" Text="Server can not be reached at this time." Visibility="Visible"
+                       VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="16" Foreground="Red"
+                       Margin="99,278,100,187" Background="{x:Null}"/>
+        </Grid>
         <Label x:Name="ProgressInfo" Content="INFO" HorizontalAlignment="Left"
                Margin="80,564,0,0" VerticalAlignment="Top" Width="415" Foreground="#FF4ABDE4"
                FontFamily="Californian FB" FontWeight="Bold" FontSize="15" Visibility="Hidden" />
@@ -223,7 +215,11 @@
                Margin="0,560,240,0" VerticalAlignment="Top" Width="162" Foreground="#FF4ABDE4"
                FontFamily="Californian FB" FontWeight="Bold" FontSize="15" Visibility="Hidden"
                HorizontalContentAlignment="Right" />
-
+        
+        <Label x:Name="LauncherVersion" Content=" " HorizontalAlignment="Left" Margin="690,590,0,0"
+               VerticalAlignment="Top" Width="100" FontSize="12" FontWeight="Bold" Foreground="White"
+               FontFamily="Californian FB" HorizontalContentAlignment="Right" />
+        
         <Button Style="{DynamicResource CloseBtn}" HorizontalAlignment="Left" Margin="782,136,0,0"
                 VerticalAlignment="Top" Height="42" Width="43" Foreground="{x:Null}" BorderBrush="{x:Null}"
                 Click="Close_Click">

@@ -1,8 +1,10 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Navigation;
+using Microsoft.Web.WebView2.Core;
 using WoWLauncher.Patcher;
 using WoWLauncher.Updater;
 
@@ -17,10 +19,11 @@ public partial class MainWindow : Window
     private readonly PatchController m_Patcher;
     private readonly UpdateController m_Updater;
     private ServerCheck m_ServerCheck;
-
     public MainWindow()
     {
         InitializeComponent();
+        InitializeWebView2();
+        
         PlayBtn.IsEnabled = false; // Disable during checks
 
         m_Updater = new UpdateController(this);
@@ -31,6 +34,7 @@ public partial class MainWindow : Window
         m_Updater.CheckForUpdates();
         // Update server address
         m_Updater.RetrieveRealmIP();
+        
 
 #if !DEBUG
         // While debugging, we don't need to check this...
@@ -57,7 +61,40 @@ public partial class MainWindow : Window
         // Begin checking for game updates
         m_Patcher.CheckPatch();
     }
+    private async void InitializeWebView2()
+    {
+        //if (!Directory.Exists("WoWLauncher.exe.WebView2"))
+          //  Directory.Delete("WoWLauncher.exe.WebView2");
+        
+        await MyWebView2.EnsureCoreWebView2Async(null);
+        // Set WebView2 initial URL or content
+        MyWebView2.Source = new Uri("http://madclownworld.com/Patch/InfoText.html");
+    }
 
+    private void MyWebView2_NavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
+    {
+        // Check if the navigation is a new URL
+        if (e.Uri != null && !e.Uri.Equals(MyWebView2.Source.AbsoluteUri, StringComparison.OrdinalIgnoreCase))
+        {
+            // Open the URL in the default browser
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = e.Uri,
+                UseShellExecute = true
+            });
+
+            // Cancel the navigation in WebView2
+            e.Cancel = true;
+        }
+        
+        ErrorMessage.Visibility = Visibility.Collapsed;
+    }
+    private void ShowErrorMessage()
+    {
+        MyWebView2.Visibility = Visibility.Collapsed;
+        ErrorMessage.Visibility = Visibility.Visible;
+    }
+    
     // Drag window around holding mouse button
     private void Window_MouseDown(object? sender, MouseButtonEventArgs? e)
     {

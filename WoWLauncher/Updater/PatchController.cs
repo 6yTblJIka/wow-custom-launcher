@@ -164,7 +164,7 @@ internal class PatchController
             File.Delete(CacheFilePath);
     }
 
-    private void Log(string message)
+    public void Log(string message)
     {
         // Log to patcher_log.txt file
         File.AppendAllText(logFilePath, $"{DateTime.Now}: {message}\n");

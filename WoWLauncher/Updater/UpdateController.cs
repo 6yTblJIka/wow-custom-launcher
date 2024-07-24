@@ -5,6 +5,7 @@ using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using WoWLauncher.Patcher;
 
 namespace WoWLauncher.Updater;
 
@@ -13,6 +14,8 @@ namespace WoWLauncher.Updater;
 /// </summary>
 internal class UpdateController
 {
+    private readonly PatchController m_Patcher;
+    
     // Data
     private static string m_RealmAddress;
 
@@ -72,7 +75,7 @@ internal class UpdateController
         NeedsUpdate = false;
         return;
     }
-
+    
     // Begin downloading update info
     using (WebClient wc = new WebClient())
     {
@@ -191,52 +194,61 @@ internal class UpdateController
     /// <param name="e"></param>
     private void update_DoneRetrieveAsync(object sender, DownloadStringCompletedEventArgs e)
     {
-        // Store complete versions
-        var _onlineVersion = e.Result;
-        var _thisVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "0.0";
-        // Split into important bits
-        var _onlineVersionParts = _onlineVersion.Split('.');
-        var _localVersionParts = _thisVersion.Split('.');
+    // Store complete versions
+    var _onlineVersion = e.Result;
+    var _thisVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? "0.0";
+    // Split into important bits
+    var _onlineVersionParts = _onlineVersion.Split('.');
+    var _localVersionParts = _thisVersion.Split('.');
 
-        // This is a little silly, but it gets the job done
-        NeedsUpdate = false;
-        if (int.TryParse(_onlineVersionParts[0], out var _majorVersionOnline))
-            if (int.TryParse(_localVersionParts[0], out var _majorVersionLocal))
-            {
-                // Major update, definitely update
-                if (_majorVersionOnline > _majorVersionLocal)
-                    NeedsUpdate = true;
-
-                // Same major version? Check for minor update
-                if (_majorVersionOnline == _majorVersionLocal)
-                    if (int.TryParse(_onlineVersionParts[1], out var _minorVersionOnline))
-                        if (int.TryParse(_localVersionParts[1], out var _minorVersionLocal))
-                            // Minor update, update anyway
-                            if (_minorVersionOnline > _minorVersionLocal)
-                                NeedsUpdate = true;
-            }
-
-        // Actual update available, 
-        if (NeedsUpdate)
-            // Ask for installation
-            if (MessageBox.Show(m_WndRef, "The launcher has an update. Do you want to update now?", "Update available!",
-                    MessageBoxButton.YesNo, MessageBoxImage.Information, MessageBoxResult.Yes,
-                    MessageBoxOptions.DefaultDesktopOnly) == MessageBoxResult.Yes)
-            {
-                // Switch to updater software
-                if (File.Exists("Updater.exe"))
-                {
-                    Application.Current.Shutdown();
-                    Process.Start(new ProcessStartInfo("Updater.exe")
-                    {
-                        UseShellExecute = true
-                    });
-                }
-                else // uh-oh. Oh well.
-                {
-                    MessageBox.Show(m_WndRef, "The launcher has an update but the updater is missing.",
-                        "Updater missing!", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
+    if (m_WndRef != null)
+    {
+        m_WndRef.LauncherVersion.Content = $"Ver. {_localVersionParts[0]}.{_localVersionParts[1]}";
     }
+    else
+    {
+        Debug.WriteLine("m_WndRef is null in update_DoneRetrieveAsync.");
+        return;
+    }
+    
+    // This is a little silly, but it gets the job done
+    NeedsUpdate = false;
+    if (int.TryParse(_onlineVersionParts[0], out var _majorVersionOnline))
+        if (int.TryParse(_localVersionParts[0], out var _majorVersionLocal))
+        {
+            // Major update, definitely update
+            if (_majorVersionOnline > _majorVersionLocal)
+                NeedsUpdate = true;
+
+            // Same major version? Check for minor update
+            if (_majorVersionOnline == _majorVersionLocal)
+                if (int.TryParse(_onlineVersionParts[1], out var _minorVersionOnline))
+                    if (int.TryParse(_localVersionParts[1], out var _minorVersionLocal))
+                        // Minor update, update anyway
+                        if (_minorVersionOnline > _minorVersionLocal)
+                            NeedsUpdate = true;
+        }
+
+    // Actual update available, 
+    if (!NeedsUpdate) return;
+    // Ask for installation
+    // if (MessageBox.Show(m_WndRef, "The launcher has an update. Do you want to update now?", "Update available!",
+    //         MessageBoxButton.YesNo, MessageBoxImage.Information, MessageBoxResult.Yes,
+    //         MessageBoxOptions.DefaultDesktopOnly) != MessageBoxResult.Yes) return;
+    // Switch to updater software
+    if (File.Exists("Updater.exe"))
+    {
+        Application.Current.Shutdown();
+        Process.Start(new ProcessStartInfo("Updater.exe")
+        {
+            UseShellExecute = true
+        });
+    }
+    else // uh-oh. Oh well.
+    {
+        // MessageBox.Show(m_WndRef, "The launcher has an update but the updater is missing.",
+        //     "Updater missing!", MessageBoxButton.OK, MessageBoxImage.Error);
+    }
+    }
+
 }
