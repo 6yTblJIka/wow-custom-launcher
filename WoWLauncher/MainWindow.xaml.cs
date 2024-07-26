@@ -78,13 +78,14 @@ public partial class MainWindow : Window
 
     private async Task StartWebView()
     {
-        if (Directory.Exists("WoWLauncher.exe.WebView2"))
-        {
-            Directory.Delete("WoWLauncher.exe.WebView2", true);
-            await Task.Delay(1000);
-        }
-        await Task.Delay(500);
-        InitializeWebView2();
+        // Delete the WebView2 user data folder if it exists
+         if (Directory.Exists("WoWLauncher.exe.WebView2"))
+         {
+             Directory.Delete("WoWLauncher.exe.WebView2", true);
+             await Task.Delay(1000); // Delay to ensure the folder is completely deleted
+         }
+         await Task.Delay(500);
+         InitializeWebView2();
         
     }
     private async void InitializeWebView2()
@@ -97,7 +98,7 @@ public partial class MainWindow : Window
     private void MyWebView2_NavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
     {
         // Check if the navigation is a new URL
-        if (e.Uri != null && !e.Uri.Equals(MyWebView2.Source.AbsoluteUri, StringComparison.OrdinalIgnoreCase))
+        if (e.IsUserInitiated && e.Uri != null && !e.Uri.Equals(MyWebView2.Source.AbsoluteUri, StringComparison.OrdinalIgnoreCase))
         {
             // Open the URL in the default browser
             Process.Start(new ProcessStartInfo
