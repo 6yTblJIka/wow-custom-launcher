@@ -14,15 +14,15 @@
         </Grid.RowDefinitions>
 
         <!-- Header Grid -->
-        <Grid Grid.Row="0" Margin="5" >
-            <Grid.ColumnDefinitions>
+        <Grid Grid.Row="0"  Margin="5" >
+            <Grid.ColumnDefinitions >
                 <ColumnDefinition Width="125" />
                 <ColumnDefinition Width="500" />
                 <ColumnDefinition Width="400" />
             </Grid.ColumnDefinitions>
-            <TextBlock Text="File Name" FontSize="20" FontWeight="Bold" Grid.Column="0" Margin="0,0,5,0" />
-            <TextBlock Text="Checksum" FontSize="20" FontWeight="Bold" Grid.Column="1" Margin="0,0,5,0" />
-            <TextBlock Text="URL" FontSize="20" FontWeight="Bold" Grid.Column="2" Margin="0" />
+            <TextBlock Text="File Name" FontSize="20" FontWeight="Bold" Grid.Column="0" />
+            <TextBlock Text="Checksum" FontSize="20" FontWeight="Bold" Grid.Column="1" />
+            <TextBlock Text="URL" FontSize="20" FontWeight="Bold" Grid.Column="2" />
         </Grid>
 
         <!-- Files Grid -->

@@ -20,7 +20,7 @@ namespace CleckList.Systems
             // Create a container Grid for the row
             var rowGrid = new Grid();
             rowGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(150) });
+            rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(125) });
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(500) });
             rowGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(400) });
 
@@ -31,7 +31,7 @@ namespace CleckList.Systems
                 TextTrimming = TextTrimming.CharacterEllipsis,
                 TextWrapping = TextWrapping.NoWrap,
                 ToolTip = fileName,
-                MaxWidth = 150, // Adjust as needed
+                MaxWidth = 125, // Adjust as needed
                 Height = _SetHeight,
                 VerticalAlignment = _SetVerticalAlignment,
                 TextAlignment = _SetTextAlignment,
