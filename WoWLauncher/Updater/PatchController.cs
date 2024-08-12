@@ -591,9 +591,22 @@ internal class PatchController
     /// <param name="e"></param>
     private void patch_DonePatchesAsync(object? sender, AsyncCompletedEventArgs e)
     {
+        if (e.Error != null)
+        {
+            ErroredPatch($"Download failed: {e.Error.Message}");
+            return;
+        }
+
+        if (e.Cancelled)
+        {
+            ErroredPatch("Download was cancelled.");
+            return;
+        }
+
         Log("Download Completed");
         var patchName = m_Patches[m_PatchIndex].Filename.ToLower();
         var patchHash = m_Patches[m_PatchIndex].Checksum;
+
         if (m_PatchIndex >= 0 && m_PatchIndex < m_Patches.Count)
         {
             // Add the downloaded file to the cache
@@ -606,6 +619,24 @@ internal class PatchController
             FinishPatch();
         else
             DownloadPatch(m_PatchIndex);
+    }
+    
+    /// <summary>
+    ///     Errored patching process and return control.
+    /// </summary>
+    private void ErroredPatch(string MSG)
+    {
+        // Reset visual elements
+        m_WndRef.ProgressBar.Value = 100;
+        m_WndRef.PlayBtn.IsEnabled = false;
+        m_WndRef.ProgressInfo.Visibility = Visibility.Visible;
+        m_WndRef.ProgressInfo2.Visibility = Visibility.Visible;
+        m_WndRef.ProgressInfo3.Visibility = Visibility.Hidden;
+        m_WndRef.ProgressInfo4.Visibility = Visibility.Hidden;
+        m_WndRef.ProgressInfo.Content = "Something happen that caused and error downloading.";
+        m_WndRef.ProgressInfo2.Content = "Please restart launcher to try again.";
+        m_DownloadStopWatch.Reset();
+        Log(MSG);
     }
 
     /// <summary>
